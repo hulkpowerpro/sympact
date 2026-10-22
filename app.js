@@ -583,7 +583,19 @@
     window.scrollTo({top:0,behavior:'auto'});
   }
   mobileNavButtons.forEach(btn=>btn.addEventListener('click',()=>setMobileTab(btn.dataset.mobileTab)));
-  if(window.matchMedia('(max-width: 700px)').matches) setMobileTab('risk');
+  const riskViewButtons = document.querySelectorAll('[data-risk-view]');
+  function setRiskView(view){
+    document.body.classList.remove('mobile-risk-view-inputs','mobile-risk-view-results');
+    document.body.classList.add('mobile-risk-view-'+view);
+    riskViewButtons.forEach(btn=>{
+      const active=btn.dataset.riskView===view;
+      btn.classList.toggle('is-active',active);
+      btn.setAttribute('aria-selected',String(active));
+    });
+    if(window.matchMedia('(max-width: 700px)').matches) window.scrollTo({top:0,behavior:'auto'});
+  }
+  riskViewButtons.forEach(btn=>btn.addEventListener('click',()=>setRiskView(btn.dataset.riskView)));
+  if(window.matchMedia('(max-width: 700px)').matches){setMobileTab('risk');setRiskView('inputs');}
   window.matchMedia('(max-width: 700px)').addEventListener?.('change',e=>{
     if(e.matches && !document.body.classList.contains('mobile-tab-risk') && !document.body.classList.contains('mobile-tab-trail') && !document.body.classList.contains('mobile-tab-more')) setMobileTab('risk');
     if(!e.matches) document.body.classList.remove('mobile-tab-risk','mobile-tab-trail','mobile-tab-more');
