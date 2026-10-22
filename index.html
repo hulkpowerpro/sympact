@@ -703,6 +703,15 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 .symbol-search-field .symbol-search-icon{flex:0 0 auto!important;pointer-events:none!important}
 .symbol-search-field .search-shortcut,.symbol-search-field .collapse-search-btn{display:none!important}
 </style>
+<style id="search-toggle-right-edge-v23">/* Search collapse control: right edge, vertically centered, both desktop and mobile. */
+.symbol-search-field{display:flex!important;align-items:center!important;gap:9px!important;padding-right:9px!important}
+.symbol-search-field input{flex:1 1 auto!important;width:0!important;min-width:0!important}
+.symbol-search-field .collapse-search-btn{display:grid!important;place-items:center!important;flex:0 0 28px!important;width:28px!important;height:28px!important;min-height:28px!important;margin-left:auto!important;padding:0!important;border:1px solid var(--line)!important;border-radius:8px!important;background:var(--surface2)!important;color:var(--muted)!important;font-size:16px!important;line-height:1!important;cursor:pointer!important;transition:background .18s,border-color .18s,color .18s!important}
+.symbol-search-field .collapse-search-btn:hover{background:var(--goldWash)!important;border-color:var(--gold)!important;color:var(--gold2)!important}
+.symbol-search-field .collapse-search-btn span{display:block;transition:transform .18s ease}
+.symbol-search-field .collapse-search-btn[aria-expanded="false"] span{transform:rotate(180deg)}
+@media(max-width:700px){.symbol-search-field{gap:7px!important;padding-right:7px!important}.symbol-search-field .collapse-search-btn{flex-basis:27px!important;width:27px!important;height:27px!important;min-height:27px!important}}
+</style>
 </head>
 <body>
 <div id="startupSplash" role="status" aria-live="polite" aria-label="SYMPACT 正在启动">
@@ -727,7 +736,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
         <div class="symbol-search-field">
           <svg class="symbol-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
           <input id="symbolSearch" type="search" autocomplete="off" spellcheck="false" placeholder="搜索标的，例如 QQQ" aria-label="搜索交易标的" aria-controls="symbolSearchResults" aria-expanded="false" role="combobox">
-          
+          <button type="button" id="collapseSymbolSearch" class="collapse-search-btn" aria-label="收起搜索结果" title="收起/展开搜索结果" aria-expanded="true"><span aria-hidden="true">⌃</span></button>
         </div>
         <div class="symbol-search-popover" id="symbolSearchPopover" hidden>
           <div class="search-popover-top"><span>搜索交易标的</span><span class="search-market-label">USDT 永续</span></div>
