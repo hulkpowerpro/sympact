@@ -14,7 +14,48 @@
 <meta name="description" content="SYMPACT 合约风险定仓与跟踪止损建议工具。" />
 <title>SYMPACT · 合约风险工作台</title>
 <!-- Critical first-paint colors: avoid the browser's default white canvas before the full stylesheet is applied. -->
-<style>html,body{background:#171614;color:#f1eee7}#startupSplash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;background:#171614;color:#f1eee7;opacity:1;visibility:visible}#startupSplash .startup-card{width:min(100%,360px);padding:28px 24px;border:1px solid rgba(220,202,164,.15);border-radius:20px;background:#201e1a;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.18)}#startupSplash .startup-mark{width:48px;height:48px;margin:0 auto 16px;display:grid;place-items:center;border:1px solid #c8ad78;border-radius:15px;background:rgba(200,173,120,.12);color:#e1cca0;font:500 27px Georgia,serif}#startupSplash .startup-title{font-size:14px;font-weight:800;letter-spacing:.2em}#startupSplash .startup-subtitle{margin-top:7px;color:#a49c8e;font-size:12px}#startupSplash .startup-track{height:3px;margin:22px 8px 0;overflow:hidden;border-radius:99px;background:#302c25}#startupSplash .startup-track:after{content:"";display:block;width:38%;height:100%;border-radius:99px;background:#c8ad78;animation:startup-load 1.15s ease-in-out infinite alternate}@keyframes startup-load{from{transform:translateX(0)}to{transform:translateX(165%)}}@media(prefers-reduced-motion:reduce){#startupSplash .startup-track:after{animation:none;width:100%}}</style>
+<style>html,body{background:#171614;color:#f1eee7}#startupSplash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;background:#171614;color:#f1eee7;opacity:1;visibility:visible}#startupSplash .startup-card{width:min(100%,360px);padding:28px 24px;border:1px solid rgba(220,202,164,.15);border-radius:20px;background:#201e1a;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.18)}#startupSplash .startup-mark{width:48px;height:48px;margin:0 auto 16px;display:grid;place-items:center;border:1px solid #c8ad78;border-radius:15px;background:rgba(200,173,120,.12);color:#e1cca0;font:500 27px Georgia,serif}#startupSplash .startup-title{font-size:14px;font-weight:800;letter-spacing:.2em}#startupSplash .startup-subtitle{margin-top:7px;color:#a49c8e;font-size:12px}#startupSplash .startup-track{height:3px;margin:22px 8px 0;overflow:hidden;border-radius:99px;background:#302c25}#startupSplash .startup-track:after{content:"";display:block;width:38%;height:100%;border-radius:99px;background:#c8ad78;animation:startup-load 1.15s ease-in-out infinite alternate}@keyframes startup-load{from{transform:translateX(0)}to{transform:translateX(165%)}}@media(prefers-reduced-motion:reduce){#startupSplash .startup-track:after{animation:none;width:100%}}
+/* Symbol search + favorites manager */
+.top-actions{position:relative}
+.symbol-search-wrap{position:relative;display:flex;align-items:center;width:194px;height:36px;gap:5px;padding:0 4px 0 10px;border:1px solid var(--line);border-radius:11px;background:var(--surface);transition:border-color .18s ease,box-shadow .18s ease;flex:none}
+.symbol-search-wrap:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px var(--focus)}
+.symbol-search-icon{width:15px;height:15px;flex:none;color:var(--gold)}
+.symbol-search-wrap input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font-size:11px;padding:0}
+.symbol-search-wrap input::placeholder{color:var(--subtle)}
+.symbol-search-wrap button{width:27px;height:27px;flex:none;border:0;border-radius:8px;background:var(--gold);color:#211b11;font-size:19px;line-height:1;font-weight:500}
+.symbol-picker{position:relative;display:flex;align-items:center;gap:6px}
+.manage-symbols-btn{height:32px;padding:0 9px;border:1px solid var(--line);border-radius:9px;background:var(--surface2);color:var(--muted);font-size:10px;white-space:nowrap}
+.manage-symbols-btn:hover,.manage-symbols-btn[aria-expanded="true"]{border-color:var(--gold);color:var(--gold2)}
+.favorites-manager{position:absolute;right:0;top:calc(100% + 9px);z-index:30;width:min(310px,calc(100vw - 32px));padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow)}
+.favorites-manager[hidden]{display:none}
+.favorites-manager-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.favorites-manager-head strong{font-size:11px}.favorites-manager-head span{font-size:9px;color:var(--subtle)}
+.favorite-chips{display:flex;flex-wrap:wrap;gap:7px}
+.favorite-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--surface2);color:var(--text);font-size:10px}
+.favorite-chip button{border:0;background:transparent;color:var(--subtle);padding:0;font-size:14px;line-height:1}
+.favorite-chip button:hover{color:var(--red)}
+.favorites-manager p{margin:10px 0 0;color:var(--subtle);font-size:9px;line-height:1.5}
+@media(max-width:920px){.symbol-search-wrap{width:165px}.top-actions{gap:7px}}
+@media(max-width:700px){
+ .topbar{align-items:flex-start!important}
+ .top-actions{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:5px!important;max-width:52vw}
+ .symbol-search-wrap{grid-column:1/-1;width:100%;height:32px;order:0}
+ .top-actions .status-pill{display:none!important}
+ .top-actions #connectionMode{display:none}
+ .top-actions .icon-btn{width:31px;height:31px;border-radius:9px}
+ .top-actions .icon-btn svg{width:15px;height:15px}
+ .symbol-picker{max-width:100%}.symbol-picker .symbol-select{max-width:118px;min-width:0!important;width:118px}
+ .manage-symbols-btn{height:30px;padding:0 7px}
+}
+@media(max-width:390px){
+ .top-actions{max-width:50vw}
+ .symbol-search-wrap{padding-left:7px}
+ .symbol-search-wrap input{font-size:10px}
+ .symbol-picker .symbol-select{width:98px;max-width:98px;font-size:10px}
+ .manage-symbols-btn{font-size:9px}
+}
+
+</style>
 <style>
 :root{color-scheme:dark;--bg:#171614;--surface:#201e1a;--surface2:#26231e;--surface3:#302c25;--text:#f1eee7;--muted:#a49c8e;--subtle:#797265;--line:rgba(220,202,164,.15);--gold:#c8ad78;--gold2:#e1cca0;--goldWash:rgba(200,173,120,.12);--green:#93b7a0;--red:#d58c83;--shadow:0 20px 60px rgba(0,0,0,.18);--input:#191815;--focus:rgba(200,173,120,.26)}
 html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--surface2:#f1ede4;--surface3:#e8e1d4;--text:#28251f;--muted:#716a5f;--subtle:#928a7e;--line:rgba(100,82,49,.17);--gold:#927443;--gold2:#775d31;--goldWash:rgba(146,116,67,.10);--green:#3e7960;--red:#ad5f54;--shadow:0 20px 60px rgba(70,55,26,.08);--input:#fffdf8;--focus:rgba(146,116,67,.18)}
@@ -390,6 +431,12 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
       </div>
     </div>
     <div class="top-actions">
+      <div class="symbol-search-wrap" id="symbolSearchWrap">
+        <svg class="symbol-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
+        <input id="symbolSearch" type="search" list="symbolSearchOptions" autocomplete="off" spellcheck="false" placeholder="搜索 / 添加标的" aria-label="搜索或添加交易标的">
+        <datalist id="symbolSearchOptions"><option value="BTCUSDT"><option value="ETHUSDT"><option value="SOLUSDT"><option value="BNBUSDT"><option value="XRPUSDT"><option value="DOGEUSDT"><option value="XAUUSDT"><option value="QQQUSDT"><option value="PAXGUSDT"></datalist>
+        <button type="button" id="addSymbolBtn" aria-label="添加标的" title="添加并切换标的">+</button>
+      </div>
       <div class="status-pill"><i class="dot" id="statusDot"></i><span id="statusText">正在连接公开行情</span></div>
       <select class="symbol-select" id="connectionMode" aria-label="行情连接策略" title="在不开 VPN 的大陆网络环境与币安直连优先之间切换"><option value="mainland" selected>大陆网络优先</option><option value="binance">币安优先</option></select>
       <button class="icon-btn" id="refreshMarket" title="重新连接行情" aria-label="重新连接行情"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 17 5l3 2M4 17l3 2a7 7 0 0 0 11.5-4"/></svg></button>
@@ -432,7 +479,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 
   <main class="main-grid">
     <section class="panel" data-mobile-panel="risk">
-      <div class="panel-head"><div class="panel-title"><span class="step-no">01</span><div><h2>风险与仓位</h2><p>定义本次交易最多愿意承担的损失</p></div></div><select class="symbol-select" id="symbolSelect" aria-label="交易币种"><option value="BTCUSDT">BTC / USDT</option><option value="ETHUSDT">ETH / USDT</option><option value="SOLUSDT">SOL / USDT</option><option value="BNBUSDT">BNB / USDT</option><option value="XRPUSDT">XRP / USDT</option><option value="DOGEUSDT">DOGE / USDT</option></select></div>
+      <div class="panel-head"><div class="panel-title"><span class="step-no">01</span><div><h2>风险与仓位</h2><p>定义本次交易最多愿意承担的损失</p></div></div><div class="symbol-picker"><select class="symbol-select" id="symbolSelect" aria-label="常用交易标的"><option value="BTCUSDT">BTC / USDT</option><option value="ETHUSDT">ETH / USDT</option><option value="SOLUSDT">SOL / USDT</option><option value="BNBUSDT">BNB / USDT</option><option value="XRPUSDT">XRP / USDT</option><option value="DOGEUSDT">DOGE / USDT</option></select><button type="button" class="manage-symbols-btn" id="manageSymbolsBtn" aria-expanded="false">管理</button><div class="favorites-manager" id="favoritesManager" hidden><div class="favorites-manager-head"><strong>常用标的</strong><span>点 × 移除</span></div><div class="favorite-chips" id="favoriteChips"></div><p>可在顶部搜索框输入交易对并添加。自定义标的能否显示行情，取决于公开行情源是否支持。</p></div></div></div>
       <div class="panel-body">
         <div class="mobile-risk-switch" role="tablist" aria-label="仓位计算视图">
           <button type="button" class="mobile-risk-tab is-active" data-risk-view="inputs" role="tab" aria-selected="true">输入参数</button>
