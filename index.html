@@ -279,6 +279,28 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
   body:not(.mobile-tab-trail):not(.mobile-tab-more) .main-grid .panel[data-mobile-panel="risk"]{display:block}
 }
 
+
+/* Final mobile composition pass: stable viewport, stable dock, balanced panel height. */
+@supports (height: 100dvh){
+  @media(max-width:700px){
+    body{min-height:100dvh}
+    .app{min-height:100dvh;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
+    .main-grid{min-height:calc(100dvh - 210px);align-content:start}
+    body.mobile-tab-risk .main-grid .panel[data-mobile-panel="risk"],
+    body.mobile-tab-trail .main-grid .panel[data-mobile-panel="trail"]{min-height:calc(100dvh - 235px)}
+  }
+}
+@media(max-width:700px){
+  .mobile-workspace-nav{position:fixed!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;transform:translate3d(0,0,0)!important;margin:0!important;width:auto!important;min-height:60px;box-sizing:border-box;isolation:isolate;touch-action:manipulation}
+  .mobile-workspace-nav .mobile-nav-btn{min-width:0;white-space:nowrap}
+  .main-grid .panel{align-self:stretch}
+  body.mobile-tab-risk .main-grid .panel[data-mobile-panel="risk"] .panel-body,
+  body.mobile-tab-trail .main-grid .panel[data-mobile-panel="trail"] .panel-body{padding-bottom:18px}
+  .risk-result-view{padding-bottom:6px}
+  body.mobile-tab-more .main-grid{min-height:0}
+}
+@media(max-width:390px){.mobile-workspace-nav{left:8px!important;right:8px!important}.mobile-nav-btn{font-size:9px!important}}
+
 </style>
 </head>
 <body>
