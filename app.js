@@ -567,6 +567,27 @@
     if(Array.isArray(previousFastCache.klines)&&previousFastCache.klines.length>=16){state.klines=previousFastCache.klines;computeATR(state.klines);drawSparkline(state.klines);}
     updateMarketUI();calculate();setStatus('warn','已显示上次行情 · 正在验证实时数据');
   }
+  // Mobile-only tab navigation; desktop keeps the original two-column workspace.
+  const mobileNavButtons = document.querySelectorAll('[data-mobile-tab]');
+  function setMobileTab(tab){
+    document.body.classList.remove('mobile-tab-risk','mobile-tab-trail','mobile-tab-more');
+    document.body.classList.add('mobile-tab-'+tab);
+    mobileNavButtons.forEach(btn=>{
+      if(btn.dataset.mobileTab===tab) btn.setAttribute('aria-current','page');
+      else btn.removeAttribute('aria-current');
+    });
+    if(tab==='more'){
+      const feed=$('chinaFeedSettings');
+      if(feed && feed.open) feed.open=false;
+    }
+    window.scrollTo({top:0,behavior:'auto'});
+  }
+  mobileNavButtons.forEach(btn=>btn.addEventListener('click',()=>setMobileTab(btn.dataset.mobileTab)));
+  if(window.matchMedia('(max-width: 700px)').matches) setMobileTab('risk');
+  window.matchMedia('(max-width: 700px)').addEventListener?.('change',e=>{
+    if(e.matches && !document.body.classList.contains('mobile-tab-risk') && !document.body.classList.contains('mobile-tab-trail') && !document.body.classList.contains('mobile-tab-more')) setMobileTab('risk');
+    if(!e.matches) document.body.classList.remove('mobile-tab-risk','mobile-tab-trail','mobile-tab-more');
+  });
   // Initial boot and lightweight refresh; public endpoints only, no API key.
   // Keep the first-visit shell visible long enough for the browser to paint it, then reveal the app without waiting for market APIs.
   requestAnimationFrame(()=>{const splash=$('startupSplash');if(splash){splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),240);}});
