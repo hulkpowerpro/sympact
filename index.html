@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN" data-theme="dark" style="background:#171614;color:#f1eee7">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -13,6 +13,8 @@
 <meta name="theme-color" content="#171614" />
 <meta name="description" content="SYMPACT 合约风险定仓与跟踪止损建议工具。" />
 <title>SYMPACT · 合约风险工作台</title>
+<!-- Critical first-paint colors: avoid the browser's default white canvas before the full stylesheet is applied. -->
+<style>html,body{background:#171614;color:#f1eee7}#startupSplash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;background:#171614;color:#f1eee7;opacity:1;visibility:visible}#startupSplash .startup-card{width:min(100%,360px);padding:28px 24px;border:1px solid rgba(220,202,164,.15);border-radius:20px;background:#201e1a;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.18)}#startupSplash .startup-mark{width:48px;height:48px;margin:0 auto 16px;display:grid;place-items:center;border:1px solid #c8ad78;border-radius:15px;background:rgba(200,173,120,.12);color:#e1cca0;font:500 27px Georgia,serif}#startupSplash .startup-title{font-size:14px;font-weight:800;letter-spacing:.2em}#startupSplash .startup-subtitle{margin-top:7px;color:#a49c8e;font-size:12px}#startupSplash .startup-track{height:3px;margin:22px 8px 0;overflow:hidden;border-radius:99px;background:#302c25}#startupSplash .startup-track:after{content:"";display:block;width:38%;height:100%;border-radius:99px;background:#c8ad78;animation:startup-load 1.15s ease-in-out infinite alternate}@keyframes startup-load{from{transform:translateX(0)}to{transform:translateX(165%)}}@media(prefers-reduced-motion:reduce){#startupSplash .startup-track:after{animation:none;width:100%}}</style>
 <style>
 :root{color-scheme:dark;--bg:#171614;--surface:#201e1a;--surface2:#26231e;--surface3:#302c25;--text:#f1eee7;--muted:#a49c8e;--subtle:#797265;--line:rgba(220,202,164,.15);--gold:#c8ad78;--gold2:#e1cca0;--goldWash:rgba(200,173,120,.12);--green:#93b7a0;--red:#d58c83;--shadow:0 20px 60px rgba(0,0,0,.18);--input:#191815;--focus:rgba(200,173,120,.26)}
 html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--surface2:#f1ede4;--surface3:#e8e1d4;--text:#28251f;--muted:#716a5f;--subtle:#928a7e;--line:rgba(100,82,49,.17);--gold:#927443;--gold2:#775d31;--goldWash:rgba(146,116,67,.10);--green:#3e7960;--red:#ad5f54;--shadow:0 20px 60px rgba(70,55,26,.08);--input:#fffdf8;--focus:rgba(146,116,67,.18)}
