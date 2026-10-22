@@ -734,6 +734,22 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 #symbolSearchWrap #collapseSymbolSearch[aria-expanded="false"] span{transform:rotate(180deg)}
 @media(max-width:700px){#symbolSearchWrap .symbol-search-field{padding-right:6px!important;gap:7px!important}#symbolSearchWrap #collapseSymbolSearch{flex-basis:22px!important;width:22px!important;min-width:22px!important;height:22px!important;min-height:22px!important}}
 </style>
+<style id="search-toggle-mobile-desktop-v27">
+/* One stable search-field layout: input stays editable; toggle occupies its own right-side slot. */
+#symbolSearchWrap .symbol-search-field{display:flex!important;align-items:center!important;gap:9px!important;padding:0 7px 0 12px!important;box-sizing:border-box!important;min-width:0!important}
+#symbolSearchWrap #symbolSearch{display:block!important;position:static!important;flex:1 1 0!important;width:0!important;min-width:0!important;height:100%!important;margin:0!important;padding:0!important;pointer-events:auto!important;visibility:visible!important;opacity:1!important;z-index:auto!important;cursor:text!important}
+#symbolSearchWrap .symbol-search-icon{position:static!important;flex:0 0 16px!important;pointer-events:none!important}
+#symbolSearchWrap #collapseSymbolSearch{display:grid!important;place-items:center!important;position:relative!important;flex:0 0 28px!important;width:28px!important;min-width:28px!important;height:28px!important;min-height:28px!important;margin:0!important;padding:0!important;border:1px solid var(--line)!important;border-radius:8px!important;background:var(--surface2)!important;color:var(--muted)!important;font-size:17px!important;line-height:1!important;cursor:pointer!important;z-index:2!important}
+#symbolSearchWrap #collapseSymbolSearch:hover,#symbolSearchWrap #collapseSymbolSearch:focus-visible{border-color:var(--gold)!important;background:var(--goldWash)!important;color:var(--gold2)!important;outline:none!important}
+#symbolSearchWrap #collapseSymbolSearch span{display:block;transition:transform .16s ease}
+#symbolSearchWrap #collapseSymbolSearch[aria-expanded="false"] span{transform:rotate(180deg)}
+#symbolSearchWrap #symbolSearchPopover[hidden]{display:none!important}
+@media(max-width:700px){
+ #symbolSearchWrap .symbol-search-field{gap:7px!important;padding-right:6px!important}
+ #symbolSearchWrap #collapseSymbolSearch{flex-basis:27px!important;width:27px!important;min-width:27px!important;height:27px!important;min-height:27px!important}
+ #symbolSearchWrap #symbolSearch{font-size:12px!important}
+}
+</style>
 <style id="stable-search-input-v26">/* v26 stable fallback: remove faulty toggle; give the search input the full usable field. */
 #symbolSearchWrap .symbol-search-field{display:flex!important;align-items:center!important;gap:10px!important;padding:0 12px!important;box-sizing:border-box!important;cursor:text!important}
 #symbolSearchWrap #symbolSearch{display:block!important;position:static!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;height:100%!important;margin:0!important;padding:0!important;pointer-events:auto!important;visibility:visible!important;opacity:1!important;z-index:auto!important;cursor:text!important}
@@ -764,6 +780,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
         <div class="symbol-search-field">
           <svg class="symbol-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
           <input id="symbolSearch" type="search" autocomplete="off" spellcheck="false" placeholder="搜索标的，例如 QQQ" aria-label="搜索交易标的" aria-controls="symbolSearchResults" aria-expanded="false" role="combobox">
+          <button type="button" id="collapseSymbolSearch" class="collapse-search-btn" aria-label="收起搜索结果" title="收起/展开搜索结果" aria-expanded="true"><span aria-hidden="true">⌃</span></button>
         </div>
         <div class="symbol-search-popover" id="symbolSearchPopover" hidden>
           <div class="search-popover-top"><span>搜索交易标的</span><span class="search-market-label">USDT 永续</span></div>
