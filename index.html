@@ -723,6 +723,17 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 .symbol-search-field .search-shortcut{display:none!important}
 @media(max-width:700px){.symbol-search-field{gap:7px!important;padding-right:6px!important}.symbol-search-field .collapse-search-btn{flex-basis:24px!important;width:24px!important;min-width:24px!important;height:24px!important;min-height:24px!important;font-size:13px!important}}
 </style>
+<style id="search-input-emergency-fix-v25">/* Emergency repair v25: input is the main hit target; toggle is a small right-edge accessory. */
+#symbolSearchWrap{position:relative!important}
+#symbolSearchWrap .symbol-search-field{position:relative!important;display:flex!important;align-items:center!important;gap:8px!important;padding:0 7px 0 12px!important;width:100%!important;height:100%!important;box-sizing:border-box!important}
+#symbolSearchWrap #symbolSearch{position:relative!important;z-index:2!important;display:block!important;flex:1 1 auto!important;width:auto!important;min-width:0!important;height:100%!important;pointer-events:auto!important;opacity:1!important;visibility:visible!important}
+#symbolSearchWrap .symbol-search-icon{position:relative!important;z-index:1!important;pointer-events:none!important;flex:0 0 16px!important}
+#symbolSearchWrap #collapseSymbolSearch{position:relative!important;z-index:4!important;flex:0 0 22px!important;width:22px!important;min-width:22px!important;height:22px!important;min-height:22px!important;margin:0!important;padding:0!important;display:grid!important;place-items:center!important;border:1px solid var(--line)!important;border-radius:6px!important;background:transparent!important;color:var(--muted)!important;font-size:12px!important;line-height:1!important;cursor:pointer!important}
+#symbolSearchWrap #collapseSymbolSearch:hover{border-color:var(--gold)!important;background:var(--goldWash)!important;color:var(--gold2)!important}
+#symbolSearchWrap #collapseSymbolSearch span{display:block!important;line-height:1!important;transition:transform .16s ease}
+#symbolSearchWrap #collapseSymbolSearch[aria-expanded="false"] span{transform:rotate(180deg)}
+@media(max-width:700px){#symbolSearchWrap .symbol-search-field{padding-right:6px!important;gap:7px!important}#symbolSearchWrap #collapseSymbolSearch{flex-basis:22px!important;width:22px!important;min-width:22px!important;height:22px!important;min-height:22px!important}}
+</style>
 </head>
 <body>
 <div id="startupSplash" role="status" aria-live="polite" aria-label="SYMPACT 正在启动">
