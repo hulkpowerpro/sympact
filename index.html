@@ -750,6 +750,36 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
  #symbolSearchWrap #symbolSearch{font-size:12px!important}
 }
 </style>
+<style id="desktop-footcards-alignment-v29">
+/* Desktop footer cards: share the exact content rails and column rhythm of the main workspace. */
+@media(min-width:701px){
+  .app>.footgrid{
+    width:100%!important;
+    max-width:none!important;
+    margin:26px 0 0!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:clamp(18px,2vw,28px)!important;
+    align-items:stretch!important;
+  }
+  .app>.footgrid>.foot-card{
+    min-width:0!important;
+    width:100%!important;
+    margin:0!important;
+    padding:22px 24px!important;
+    border:1px solid var(--line)!important;
+    border-radius:16px!important;
+    box-sizing:border-box!important;
+    box-shadow:var(--shadow)!important;
+  }
+  .app>.footgrid>.foot-card h3{margin:0 0 12px!important;font-size:12px!important;line-height:1.5!important}
+  .app>.footgrid>.foot-card p{font-size:11px!important;line-height:1.75!important}
+  .app>.footgrid>.foot-card .formula{font-size:10px!important;line-height:1.9!important}
+  .app>.disclaimer,.app>.footerline{width:100%!important;box-sizing:border-box!important}
+}
+</style>
 <style id="mobile-search-zoom-and-symbol-width-v28">
 /* Mobile Safari zoom prevention: focused search text must remain at least 16px. */
 @media(max-width:700px),(pointer:coarse){
