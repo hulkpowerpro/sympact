@@ -696,6 +696,13 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
  .main-grid{grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr)!important;gap:26px!important}
 }
 </style>
+<style id="search-hitarea-cleanup-v22">
+/* Search field hit-area repair: the whole surface focuses the input; remove obsolete controls. */
+.symbol-search-field{position:relative!important;display:flex!important;align-items:center!important;gap:9px!important;cursor:text!important}
+.symbol-search-field input{flex:1 1 auto!important;width:0!important;min-width:0!important;pointer-events:auto!important;cursor:text!important}
+.symbol-search-field .symbol-search-icon{flex:0 0 auto!important;pointer-events:none!important}
+.symbol-search-field .search-shortcut,.symbol-search-field .collapse-search-btn{display:none!important}
+</style>
 </head>
 <body>
 <div id="startupSplash" role="status" aria-live="polite" aria-label="SYMPACT 正在启动">
@@ -720,7 +727,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
         <div class="symbol-search-field">
           <svg class="symbol-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
           <input id="symbolSearch" type="search" autocomplete="off" spellcheck="false" placeholder="搜索标的，例如 QQQ" aria-label="搜索交易标的" aria-controls="symbolSearchResults" aria-expanded="false" role="combobox">
-          <button type="button" id="collapseSymbolSearch" class="collapse-search-btn" aria-label="展开标的搜索" title="展开/收起搜索结果" aria-expanded="true"><span aria-hidden="true">⌃</span></button>
+          
         </div>
         <div class="symbol-search-popover" id="symbolSearchPopover" hidden>
           <div class="search-popover-top"><span>搜索交易标的</span><span class="search-market-label">USDT 永续</span></div>
