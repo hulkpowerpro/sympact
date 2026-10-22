@@ -127,9 +127,29 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 @media(max-width:700px){.install-row{gap:9px;margin-top:14px}.install-app-btn{min-height:42px}}
 @media(prefers-reduced-motion:reduce){.install-app-btn{transition:none!important}}
 
+/* First-visit startup shell: immediate visual feedback while market feeds connect. */
+#startupSplash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;background:var(--bg);opacity:1;visibility:visible;transition:opacity .22s ease,visibility .22s ease}
+#startupSplash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.startup-card{width:min(100%,360px);padding:28px 24px;border:1px solid var(--line);border-radius:20px;background:var(--surface);text-align:center;box-shadow:var(--shadow)}
+.startup-mark{width:48px;height:48px;margin:0 auto 16px;display:grid;place-items:center;border:1px solid var(--gold);border-radius:15px;background:var(--goldWash);color:var(--gold2);font:500 27px Georgia,serif}
+.startup-title{font-size:14px;font-weight:800;letter-spacing:.2em}
+.startup-subtitle{margin-top:7px;color:var(--muted);font-size:12px}
+.startup-track{height:3px;margin:22px 8px 0;overflow:hidden;border-radius:99px;background:var(--surface3)}
+.startup-track:after{content:"";display:block;width:38%;height:100%;border-radius:99px;background:var(--gold);animation:startup-load 1.15s ease-in-out infinite alternate}
+@keyframes startup-load{from{transform:translateX(0)}to{transform:translateX(165%)}}
+@media(prefers-reduced-motion:reduce){#startupSplash{transition:none}.startup-track:after{animation:none;width:100%}}
+
 </style>
 </head>
 <body>
+<div id="startupSplash" role="status" aria-live="polite" aria-label="SYMPACT 正在启动">
+  <div class="startup-card">
+    <div class="startup-mark" aria-hidden="true">S</div>
+    <div class="startup-title">SYMPACT</div>
+    <div class="startup-subtitle">正在准备交易工作台…</div>
+    <div class="startup-track" aria-hidden="true"></div>
+  </div>
+</div>
 <div class="app">
   <header class="topbar">
     <div class="brand" aria-label="SYMPACT 风险工作台">
@@ -837,6 +857,8 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
     updateMarketUI();calculate();setStatus('warn','已显示上次行情 · 正在验证实时数据');
   }
   // Initial boot and lightweight refresh; public endpoints only, no API key.
+  // Keep the first-visit shell visible long enough for the browser to paint it, then reveal the app without waiting for market APIs.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(()=>{const splash=$('startupSplash');if(splash){splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),260);}},120)));
   (async()=>{loadExchangeInfo().catch(e=>console.warn('Exchange rules fetch failed',e));await loadMarket({klines:!Array.isArray(previousFastCache?.klines)||previousFastCache.klines.length<16});state.timer=setInterval(()=>loadMarket({klines:false}),10000);state.klineTimer=setInterval(()=>loadMarket({klines:true}),60000);})();
 })();
 </script>
