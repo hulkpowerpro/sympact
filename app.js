@@ -19,9 +19,26 @@
   const coinSymbols = {BTCUSDT:'₿',ETHUSDT:'◆',SOLUSDT:'◎',BNBUSDT:'◆',XRPUSDT:'✦',DOGEUSDT:'Ð',XAUUSDT:'Au',PAXGUSDT:'Au',QQQUSDT:'Q'};
   const DEFAULT_FAVORITES=['BTCUSDT','ETHUSDT','SOLUSDT','BNBUSDT','XRPUSDT','DOGEUSDT'];
   const FAVORITES_KEY='sympact-favorite-symbols-v1';
+  const SEARCH_EXCHANGE_KEY='sympact-search-exchange-v1';
+  const KNOWN_SYMBOLS=[
+    {symbol:'BTCUSDT',name:'Bitcoin 比特币',exchange:'all',kind:'主流币'},
+    {symbol:'ETHUSDT',name:'Ethereum 以太坊',exchange:'all',kind:'主流币'},
+    {symbol:'SOLUSDT',name:'Solana',exchange:'all',kind:'主流币'},
+    {symbol:'BNBUSDT',name:'BNB',exchange:'all',kind:'主流币'},
+    {symbol:'XRPUSDT',name:'XRP 瑞波币',exchange:'all',kind:'主流币'},
+    {symbol:'DOGEUSDT',name:'Dogecoin 狗狗币',exchange:'all',kind:'主流币'},
+    {symbol:'ADAUSDT',name:'Cardano',exchange:'all',kind:'热门合约'},
+    {symbol:'LINKUSDT',name:'Chainlink',exchange:'all',kind:'热门合约'},
+    {symbol:'AVAXUSDT',name:'Avalanche',exchange:'all',kind:'热门合约'},
+    {symbol:'SUIUSDT',name:'Sui',exchange:'all',kind:'热门合约'},
+    {symbol:'LTCUSDT',name:'Litecoin',exchange:'all',kind:'热门合约'},
+    {symbol:'XAUUSDT',name:'Gold 黄金（仅当所选交易所实际支持时可用）',exchange:'none',kind:'需验证'},
+    {symbol:'QQQUSDT',name:'Nasdaq-100 ETF（仅当所选交易所实际支持时可用）',exchange:'none',kind:'需验证'},
+    {symbol:'PAXGUSDT',name:'PAX Gold 黄金代币',exchange:'all',kind:'需验证'}
+  ];
   function readFavorites(){try{const saved=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'null');return Array.isArray(saved)?[...new Set(saved.map(normalizeSymbol).filter(Boolean))]:DEFAULT_FAVORITES.slice();}catch(_){return DEFAULT_FAVORITES.slice();}}
   let favoriteSymbols=readFavorites();
-  function normalizeSymbol(value){const s=String(value||'').trim().toUpperCase().replace(/[\s\/_-]/g,'');if(!/^[A-Z0-9]{2,24}USDT$/.test(s))return '';return s;}
+  function normalizeSymbol(value){const s=String(value||'').trim().toUpperCase().replace(/[\\s\\/_-]/g,'');if(!/^[A-Z0-9]{2,24}USDT$/.test(s))return '';return s;}
   function saveFavorites(){try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(favoriteSymbols));}catch(_){};renderFavoriteSymbols();}
   function symbolLabel(symbol){return symbol.endsWith('USDT')?symbol.slice(0,-4)+' / USDT':symbol;}
   function renderFavoriteSymbols(){
@@ -33,21 +50,86 @@
     select.value=current;
     const chips=$('favoriteChips');if(chips){chips.innerHTML='';favoriteSymbols.forEach(symbol=>{const chip=document.createElement('span');chip.className='favorite-chip';const label=document.createElement('span');label.textContent=symbolLabel(symbol);chip.appendChild(label);const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','移除 '+symbol);remove.addEventListener('click',()=>{if(favoriteSymbols.length<=1){showToast('至少保留一个常用标的');return;}favoriteSymbols=favoriteSymbols.filter(x=>x!==symbol);saveFavorites();});chip.appendChild(remove);chips.appendChild(chip);});}
   }
-  function addFavoriteSymbol(raw){
-    const symbol=normalizeSymbol(raw);if(!symbol){showToast('请输入有效格式，例如 BTCUSDT');return;}
-    if(!favoriteSymbols.includes(symbol)){favoriteSymbols.push(symbol);saveFavorites();}
-    $('symbolSearch').value='';
+  function getExchangeSymbols(){
+    const list=state.exchangeInfo&&Array.isArray(state.exchangeInfo.symbols)?state.exchangeInfo.symbols.filter(s=>s.status==='TRADING'&&s.quoteAsset==='USDT'&&s.contractType==='PERPETUAL').map(s=>s.symbol):[];
+    return list;
+  }
+  function activeSearchExchange(){return $('searchExchange')?.value||'auto';}
+  function symbolSupported(symbol,exchange=activeSearchExchange()){
+    if(exchange==='okx')return ['BTCUSDT','ETHUSDT','SOLUSDT','XRPUSDT','DOGEUSDT','ADAUSDT','LINKUSDT','AVAXUSDT','LTCUSDT','SUIUSDT'].includes(symbol);
+    if(exchange==='gate')return ['BTCUSDT','ETHUSDT','SOLUSDT','BNBUSDT','XRPUSDT','DOGEUSDT','ADAUSDT','LINKUSDT','AVAXUSDT','LTCUSDT','SUIUSDT'].includes(symbol);
+    const binanceKnown=getExchangeSymbols();
+    if(binanceKnown.length)return binanceKnown.includes(symbol);
+    return DEFAULT_FAVORITES.includes(symbol)||['ADAUSDT','LINKUSDT','AVAXUSDT','SUIUSDT','LTCUSDT'].includes(symbol);
+  }
+  function searchName(symbol){return KNOWN_SYMBOLS.find(x=>x.symbol===symbol)?.name||symbol.replace(/USDT$/,'')+' / USDT 永续合约';}
+  function renderSearchResults(){
+    const input=$('symbolSearch'),results=$('symbolSearchResults'),hint=$('symbolSearchHint'),popover=$('symbolSearchPopover');if(!input||!results||!popover)return;
+    const raw=input.value.trim().toUpperCase();
+    const query=raw.replace(/[\\s\\/_-]/g,'');
+    const exchange=activeSearchExchange();
+    const exchangeSymbols=getExchangeSymbols();
+    const pool=[...new Set([...favoriteSymbols,...DEFAULT_FAVORITES,...KNOWN_SYMBOLS.map(x=>x.symbol),...exchangeSymbols])];
+    const matches=pool.filter(symbol=>{
+      if(!query)return favoriteSymbols.includes(symbol)||DEFAULT_FAVORITES.includes(symbol);
+      return symbol.includes(query)||searchName(symbol).toUpperCase().includes(raw);
+    }).filter(symbol=>!['okx','gate'].includes(exchange)||symbolSupported(symbol,exchange)).slice(0,9);
+    results.innerHTML='';
+    if(!query){
+      hint.textContent='输入代码或名称，例如 QQQ、BTC、SOL；选择结果后才会切换标的。';
+    }else if(matches.length){
+      hint.textContent='请选择匹配的合约。选择交易所后会优先尝试该来源，实际可用性仍以行情源返回为准。';
+    }else{
+      hint.textContent='没有找到匹配项。你仍可尝试完整代码，但系统会先验证交易所是否支持。';
+    }
+    if(matches.length){
+      matches.forEach(symbol=>{
+        const supported=symbolSupported(symbol,exchange);
+        const btn=document.createElement('button');btn.type='button';btn.className='symbol-search-result';btn.setAttribute('role','option');btn.setAttribute('aria-selected','false');
+        const icon=document.createElement('span');icon.className='search-result-icon';icon.textContent=symbol.replace(/USDT$/,'').slice(0,3);
+        const copy=document.createElement('span');copy.className='search-result-copy';
+        const title=document.createElement('span');title.className='search-result-symbol';title.textContent=symbol;
+        const name=document.createElement('span');name.className='search-result-name';name.textContent=searchName(symbol);
+        copy.append(title,name);
+        const tag=document.createElement('span');tag.className='search-result-tag'+(favoriteSymbols.includes(symbol)?' favorite':'');tag.textContent=favoriteSymbols.includes(symbol)?'已收藏':(supported?'永续合约':'待验证');
+        btn.append(icon,copy,tag);btn.addEventListener('click',()=>selectSearchSymbol(symbol));results.appendChild(btn);
+      });
+    }else{
+      const empty=document.createElement('div');empty.className='search-empty';
+      const strong=document.createElement('strong');strong.textContent='暂未找到这个标的';
+      const desc=document.createElement('span');desc.textContent=query?('“'+raw+'”没有匹配的常见合约。请检查拼写，或选择其他行情来源。'):'暂无推荐标的';
+      empty.append(strong,desc);results.appendChild(empty);
+      if(query&&/^[A-Z0-9]{2,24}(USDT)?$/.test(query)){
+        const symbol=query.endsWith('USDT')?query:query+'USDT';
+        const tryBtn=document.createElement('button');tryBtn.type='button';tryBtn.className='symbol-search-result';
+        tryBtn.innerHTML='<span class="search-result-icon">?</span><span class="search-result-copy"><span class="search-result-symbol"></span><span class="search-result-name">尝试验证完整交易代码</span></span><span class="search-result-tag">验证</span>';
+        tryBtn.querySelector('.search-result-symbol').textContent=symbol;
+        tryBtn.addEventListener('click',()=>selectSearchSymbol(symbol,true));results.appendChild(tryBtn);
+      }
+    }
+  }
+  function openSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=false;$('symbolSearch').setAttribute('aria-expanded','true');renderSearchResults();}
+  function closeSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=true;$('symbolSearch').setAttribute('aria-expanded','false');}
+  function selectSearchSymbol(symbol,allowUnknown=false){
+    const exchange=activeSearchExchange();
+    if(!symbolSupported(symbol,exchange)&&!allowUnknown){showToast('当前来源未确认支持 '+symbol+'，请换来源或点“验证”');return;}
+    if(!symbolSupported(symbol,exchange)&&allowUnknown){
+      showToast('正在验证 '+symbol+' 的实际可用性…');
+    }
+    if(!favoriteSymbols.includes(symbol)){favoriteSymbols.push(symbol);try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(favoriteSymbols));}catch(_){};}
+    $('symbolSelect').innerHTML='';
+    renderFavoriteSymbols();
     $('symbolSelect').value=symbol;
-    if(symbol!==state.symbol)changeSymbol();
-    else showToast('已在当前标的');
-    const manager=$('favoritesManager');if(manager&&!manager.hidden)renderFavoriteSymbols();
+    $('symbolSearch').value='';
+    closeSearchPopover();
+    const mode=$('connectionMode');
+    if(exchange==='binance'&&mode)mode.value='binance';
+    if(exchange==='auto'&&mode)mode.value='mainland';
+    state.preferredExchange=exchange;
+    if(symbol!==state.symbol)changeSymbol();else{showToast('当前已是 '+symbol);renderFavoriteSymbols();}
   }
-  function populateSymbolSuggestions(){
-    const list=$('symbolSearchOptions');if(!list)return;
-    const known=state.exchangeInfo&&Array.isArray(state.exchangeInfo.symbols)?state.exchangeInfo.symbols.filter(s=>s.status==='TRADING'&&s.quoteAsset==='USDT'&&s.contractType==='PERPETUAL').map(s=>s.symbol):[];
-    const symbols=[...new Set([...favoriteSymbols,...known,'XAUUSDT','QQQUSDT','PAXGUSDT'])];
-    list.innerHTML='';symbols.forEach(symbol=>{const option=document.createElement('option');option.value=symbol;list.appendChild(option);});
-  }
+  function addFavoriteSymbol(raw){const symbol=normalizeSymbol(raw);if(!symbol){showToast('代码格式不正确，例如 BTCUSDT');return;}selectSearchSymbol(symbol,true);}
+  function populateSymbolSuggestions(){renderSearchResults();}
   // Mainland-first source order tries OKX and Gate public linear swaps before Binance. Bybit documents a 403 restriction for mainland-China IPs, so it is not in the automatic connection path.
   // Price is decoupled from candles: a K-line failure must not erase a working live ticker. Public relays are a last resort.
   const FUTURES_ROOTS=['https://fapi.binance.com','https://fapi1.binance.com','https://fapi2.binance.com','https://fapi3.binance.com','https://fapi4.binance.com'];
@@ -107,7 +189,9 @@
   function providerOrder(){
     const mainland=['okx-swap','aicoin-aggregated','gate-futures','binance-futures','binance-spot','coinbase-spot','kraken-spot'];
     const binance=['binance-futures','binance-spot','okx-swap','aicoin-aggregated','gate-futures','coinbase-spot','kraken-spot'];
-    const all0=state.connectionMode==='binance'?binance:mainland;
+    const preferred=state.preferredExchange;
+    const priorityMap={binance:['binance-futures','binance-spot'],okx:['okx-swap'],gate:['gate-futures']};
+    const all0=preferred&&priorityMap[preferred]? [...priorityMap[preferred],...mainland.filter(id=>!priorityMap[preferred].includes(id))]:(state.connectionMode==='binance'?binance:mainland);
     const all=aicoinConfigured()?all0:all0.filter(id=>id!=='aicoin-aggregated');
     if(state.forceAicoin&&aicoinConfigured())return ['aicoin-aggregated',...all.filter(id=>id!=='aicoin-aggregated')];
     if(state.activeProvider&&all.includes(state.activeProvider))return [state.activeProvider,...all.filter(x=>x!==state.activeProvider)];
@@ -580,7 +664,15 @@
   $('longBtn').addEventListener('click',()=>setSide('long'));$('shortBtn').addEventListener('click',()=>setSide('short'));
   $('symbolSelect').addEventListener('change',changeSymbol);
   $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();addFavoriteSymbol($('symbolSearch').value);}});
-  $('addSymbolBtn').addEventListener('click',()=>addFavoriteSymbol($('symbolSearch').value));
+  $('symbolSearch').addEventListener('focus',openSearchPopover);
+  $('symbolSearch').addEventListener('input',()=>{openSearchPopover();renderSearchResults();});
+  $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Escape'){closeSearchPopover();return;}if(event.key==='Enter'){event.preventDefault();const first=$('symbolSearchResults')?.querySelector('.symbol-search-result');if(first)first.click();else addFavoriteSymbol($('symbolSearch').value);}});
+  $('searchExchange').addEventListener('change',renderSearchResults);
+  document.addEventListener('click',event=>{if(!$('symbolSearchWrap').contains(event.target))closeSearchPopover();});
+  $('symbolSearchWrap').addEventListener('keydown',event=>{if(event.key==='ArrowDown'){$('symbolSearchResults')?.querySelector('.symbol-search-result')?.focus();}});
+  $('symbolSearchWrap').addEventListener('mouseenter',()=>{$('symbolSearchWrap').classList.add('is-hovered');});
+  $('symbolSearchWrap').addEventListener('mouseleave',()=>{$('symbolSearchWrap').classList.remove('is-hovered');});
+  $('addSymbolBtn')?.addEventListener('click',()=>addFavoriteSymbol($('symbolSearch').value));
   $('manageSymbolsBtn').addEventListener('click',()=>{const panel=$('favoritesManager'),open=panel.hidden;panel.hidden=!open;$('manageSymbolsBtn').setAttribute('aria-expanded',String(open));if(open)renderFavoriteSymbols();});
   document.addEventListener('click',event=>{const picker=$('symbolPicker');if(picker&&!picker.contains(event.target)&&!$('manageSymbolsBtn').contains(event.target)){const panel=$('favoritesManager');if(panel&&!panel.hidden){panel.hidden=true;$('manageSymbolsBtn').setAttribute('aria-expanded','false');}}});
   renderFavoriteSymbols();populateSymbolSuggestions();
