@@ -569,6 +569,6 @@
   }
   // Initial boot and lightweight refresh; public endpoints only, no API key.
   // Keep the first-visit shell visible long enough for the browser to paint it, then reveal the app without waiting for market APIs.
-  requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(()=>{const splash=$('startupSplash');if(splash){splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),260);}},450)));
+  requestAnimationFrame(()=>{const splash=$('startupSplash');if(splash){splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),240);}});
   (async()=>{loadExchangeInfo().catch(e=>console.warn('Exchange rules fetch failed',e));await loadMarket({klines:!Array.isArray(previousFastCache?.klines)||previousFastCache.klines.length<16});state.timer=setInterval(()=>loadMarket({klines:false}),10000);state.klineTimer=setInterval(()=>loadMarket({klines:true}),60000);})();
 })();
