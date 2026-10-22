@@ -108,8 +108,8 @@
       }
     }
   }
-  function openSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=false;$('symbolSearch').setAttribute('aria-expanded','true');const toggle=$('collapseSymbolSearch');if(toggle){toggle.setAttribute('aria-expanded','true');toggle.setAttribute('aria-label','收起标的搜索');}renderSearchResults();}
-  function closeSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=true;$('symbolSearch').setAttribute('aria-expanded','false');const toggle=$('collapseSymbolSearch');if(toggle){toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','展开标的搜索');}}
+  function openSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=false;$('symbolSearch').setAttribute('aria-expanded','true');renderSearchResults();}
+  function closeSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=true;$('symbolSearch').setAttribute('aria-expanded','false');}
   function selectSearchSymbol(symbol,allowUnknown=false){
     const exchange=activeSearchExchange();
     if(!symbolSupported(symbol,exchange)&&!allowUnknown){showToast('当前来源未确认支持 '+symbol+'，请换来源或点“验证”');return;}
@@ -665,14 +665,7 @@
   $('symbolSelect').addEventListener('change',changeSymbol);
   $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();addFavoriteSymbol($('symbolSearch').value);}});
   $('symbolSearch').addEventListener('focus',openSearchPopover);
-  const searchToggle=$('collapseSymbolSearch');
-  searchToggle?.addEventListener('pointerdown',event=>{event.preventDefault();});
-  searchToggle?.addEventListener('click',event=>{
-    event.preventDefault();event.stopPropagation();
-    const pop=$('symbolSearchPopover');
-    if(pop?.hidden){openSearchPopover();searchToggle.setAttribute('aria-expanded','true');searchToggle.setAttribute('aria-label','收起标的搜索');}
-    else{closeSearchPopover();searchToggle.setAttribute('aria-expanded','false');searchToggle.setAttribute('aria-label','展开标的搜索');}
-  });
+  
   $('symbolSearch').addEventListener('input',()=>{openSearchPopover();renderSearchResults();});
   $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Escape'){closeSearchPopover();return;}if(event.key==='Enter'){event.preventDefault();const first=$('symbolSearchResults')?.querySelector('.symbol-search-result');if(first)first.click();else addFavoriteSymbol($('symbolSearch').value);}});
   $('searchExchange').addEventListener('change',renderSearchResults);
