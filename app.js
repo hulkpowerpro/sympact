@@ -578,7 +578,7 @@
     });
     if(tab==='more'){
       const feed=$('chinaFeedSettings');
-      if(feed && feed.open) feed.open=false;
+      if(feed) feed.open=true;
     }
     window.scrollTo({top:0,behavior:'auto'});
   }
