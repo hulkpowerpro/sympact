@@ -141,6 +141,69 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 @keyframes startup-load{from{transform:translateX(0)}to{transform:translateX(165%)}}
 @media(prefers-reduced-motion:reduce){#startupSplash{transition:none}.startup-track:after{animation:none;width:100%}}
 
+
+/* Mobile workspace navigation: compact, thumb-friendly, matching the SYMPACT visual system. */
+.mobile-workspace-nav{display:none}
+@media(max-width:700px){
+  .app{padding:10px 12px calc(92px + env(safe-area-inset-bottom))}
+  .topbar{padding:0 0 10px!important;border-bottom:1px solid var(--line)}
+  .brand{width:auto!important;flex:1 1 auto!important;gap:8px!important}
+  .brandmark{width:43px!important;height:42px!important}
+  .brandmark img{width:53px!important;height:53px!important}
+  .brandname{font-size:18px!important;letter-spacing:.14em!important}
+  .brandsub{font-size:6px!important;letter-spacing:.07em!important}
+  .brandline{max-width:145px!important}
+  .top-actions{display:flex!important;grid-template-columns:none!important;grid-template-rows:none!important;width:auto!important;gap:5px!important}
+  .top-actions .status-pill{display:none!important}
+  .top-actions #connectionMode{display:none!important}
+  .top-actions #refreshMarket,.top-actions #themeToggle{width:34px;height:34px}
+  .intro{padding:10px 0 12px!important;gap:0!important;display:block!important}
+  .intro>div:first-child{display:none!important}
+  .market-head{min-width:0!important;width:100%!important;padding:9px 11px!important;border-radius:13px!important;gap:9px!important}
+  .coin-icon{width:30px;height:30px}
+  .market-symbol{font-size:11px}
+  .market-caption,.market-price span{font-size:9px}
+  .market-price strong{font-size:15px}
+  .china-feed,.footgrid,.disclaimer,.footerline{display:none}
+  .main-grid{display:block!important}
+  .main-grid .panel{display:none;margin:0 0 12px;border-radius:15px}
+  body.mobile-tab-risk .main-grid .panel[data-mobile-panel="risk"],
+  body.mobile-tab-trail .main-grid .panel[data-mobile-panel="trail"]{display:block}
+  body.mobile-tab-more .main-grid{display:none!important}
+  body.mobile-tab-more .china-feed{display:block;margin:0 0 12px}
+  body.mobile-tab-more .footgrid{display:grid;grid-template-columns:1fr;margin-top:12px}
+  body.mobile-tab-more .disclaimer{display:flex}
+  body.mobile-tab-more .footerline{display:flex}
+  .panel-head{padding:13px 13px 11px!important;gap:8px!important}
+  .panel-title{gap:8px!important}
+  .step-no{font-size:18px}
+  .panel-title h2{font-size:12px}
+  .panel-title p{font-size:10px}
+  .panel-body{padding:13px!important}
+  .field-grid{gap:11px 9px!important}
+  .field .helper{font-size:9px}
+  .summary-top{gap:7px!important}
+  .metric{padding:11px!important}
+  .metric-label{font-size:9px;margin-bottom:6px}
+  .metric-value{font-size:21px!important}
+  .metric-unit{font-size:9px}
+  .kv{padding:8px 0;font-size:10px}
+  .warn{font-size:10px;padding:10px}
+  .trail-recommendations{gap:8px!important}
+  .recommendation-card{min-height:150px!important;padding:12px 10px!important}
+  .recommendation-label{margin-top:12px!important;font-size:10px}
+  .recommendation-number strong{font-size:clamp(18px,5.2vw,25px)!important}
+  .recommendation-card p{font-size:9px!important;line-height:1.5}
+  .method-note{display:none!important}
+  .copy-btn{margin-top:12px;height:44px}
+  .mobile-workspace-nav{position:fixed;z-index:1000;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:6px;border:1px solid rgba(220,202,164,.20);border-radius:17px;background:rgba(32,30,26,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 36px rgba(0,0,0,.32)}
+  .mobile-nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:48px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--muted);font:inherit;font-size:10px;font-weight:650;letter-spacing:.02em}
+  .mobile-nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .mobile-nav-btn[aria-current="page"]{border-color:rgba(200,173,120,.3);background:linear-gradient(135deg,rgba(200,173,120,.16),rgba(200,173,120,.05));color:var(--gold2)}
+  .mobile-nav-btn:active{transform:scale(.98)}
+}
+@media(min-width:701px){.mobile-workspace-nav{display:none!important}}
+
 </style>
 </head>
 <body>
@@ -204,7 +267,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
   </details>
 
   <main class="main-grid">
-    <section class="panel">
+    <section class="panel" data-mobile-panel="risk">
       <div class="panel-head"><div class="panel-title"><span class="step-no">01</span><div><h2>风险与仓位</h2><p>定义本次交易最多愿意承担的损失</p></div></div><select class="symbol-select" id="symbolSelect" aria-label="交易币种"><option value="BTCUSDT">BTC / USDT</option><option value="ETHUSDT">ETH / USDT</option><option value="SOLUSDT">SOL / USDT</option><option value="BNBUSDT">BNB / USDT</option><option value="XRPUSDT">XRP / USDT</option><option value="DOGEUSDT">DOGE / USDT</option></select></div>
       <div class="panel-body">
         <div class="field full" style="margin-bottom:16px"><div class="label-row"><label class="label">交易方向</label><span class="mini-note">按平仓方向反向生成跟踪止损逻辑</span></div><div class="segmented"><button class="segment active long" data-side="long" id="longBtn" type="button">↗　做多 / LONG</button><button class="segment" data-side="short" id="shortBtn" type="button">↘　做空 / SHORT</button></div></div>
@@ -234,7 +297,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel" data-mobile-panel="trail">
       <div class="panel-head"><div class="panel-title"><span class="step-no">02</span><div><h2>跟踪止损建议</h2><p>以当前波动率为参照，而非预测价格方向</p></div></div><div class="controls-inline"><select id="intervalSelect" aria-label="ATR时间周期"><option value="15m">15 分钟</option><option value="1h">1 小时</option><option value="4h" selected>4 小时</option><option value="1d">日线</option></select></div></div>
       <div class="panel-body">
         <details class="market-details">
@@ -287,6 +350,11 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
   <div class="disclaimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 3 7v5c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-4Z"/><path d="M12 8v4m0 4h.01"/></svg><span>仅用于计算与参数参考，不构成投资建议，也不会连接账户或执行交易。跟踪止损触发后通常提交市价平仓，成交价可能因滑点偏离触发价；它也不会自动替代你在交易所单独设置的初始保护止损。风险金额是估算值，真实结果受手续费等级、资金费率、滑点、仓位模式及保证金规则影响。</span></div>
   <footer class="footerline"><span>SYMPACT RISK DESK <span style="color:var(--gold)">·</span> 本地工具 · 不收集账户数据</span><span><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information" target="_blank" rel="noreferrer">合约规则</a>　·　<a href="https://developers.binance.com/en/docs/catalog/advanced-trading-derivatives-trading-portfolio-margin/api/rest-api/trade" target="_blank" rel="noreferrer">跟踪止损规则</a></span></footer>
 </div>
+<nav class="mobile-workspace-nav" aria-label="工作台导航">
+  <button class="mobile-nav-btn" type="button" data-mobile-tab="risk" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16"/><path d="m7 15 4-4 3 2 5-6"/></svg><span>仓位计算</span></button>
+  <button class="mobile-nav-btn" type="button" data-mobile-tab="trail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h4l3-5 3 2 3-7 3 1"/><path d="M4 21h16"/></svg><span>跟踪止损</span></button>
+  <button class="mobile-nav-btn" type="button" data-mobile-tab="more"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg><span>设置与说明</span></button>
+</nav>
 <div class="toast" id="toast">已复制</div>
 <script src="./app.js" defer></script>
 
