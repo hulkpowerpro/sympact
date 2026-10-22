@@ -214,6 +214,66 @@
  .top-actions .symbol-search-wrap{display:none!important}
 }
 
+
+/* SYMPACT UI repair v20: contained search panel, deliberate brand spacing, balanced desktop workspace. */
+.search-popover-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;min-height:32px!important;padding:4px 3px 9px!important}
+.search-popover-actions{display:flex;align-items:center;gap:8px;flex:none}
+.collapse-search-btn{min-height:27px!important;padding:0 9px!important;border:1px solid var(--line)!important;border-radius:8px!important;background:var(--surface2)!important;color:var(--muted)!important;font-size:10px!important;white-space:nowrap}
+.collapse-search-btn:hover{border-color:var(--gold)!important;color:var(--gold2)!important;background:var(--goldWash)!important}
+.symbol-search-popover{box-sizing:border-box!important;max-height:min(390px,60vh)!important;overflow-x:hidden!important;padding:10px!important}
+.symbol-search-results{display:flex!important;flex-direction:column!important;gap:3px!important;width:100%!important;min-width:0!important}
+.symbol-search-result{box-sizing:border-box!important;display:grid!important;grid-template-columns:34px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;width:100%!important;min-width:0!important;min-height:54px!important;height:auto!important;max-height:66px!important;padding:8px 10px!important;margin:0!important;overflow:hidden!important;border:1px solid transparent!important;border-radius:10px!important;background:transparent!important;text-align:left!important;white-space:normal!important;transform:none!important}
+.symbol-search-result:hover,.symbol-search-result:focus-visible{transform:translateY(-1px)!important;background:var(--goldWash)!important;border-color:rgba(200,173,120,.32)!important}
+.search-result-icon{display:grid!important;place-items:center!important;width:34px!important;height:34px!important;min-width:34px!important;max-width:34px!important;min-height:34px!important;max-height:34px!important;overflow:hidden!important;border:1px solid var(--line)!important;border-radius:10px!important;background:var(--surface2)!important;color:var(--gold2)!important;font-size:10px!important;line-height:1!important;writing-mode:horizontal-tb!important;white-space:nowrap!important}
+.search-result-copy{display:flex!important;flex-direction:column!important;justify-content:center!important;gap:2px!important;min-width:0!important;width:100%!important;overflow:hidden!important}
+.search-result-symbol,.search-result-name{display:block!important;width:100%!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;writing-mode:horizontal-tb!important;word-break:normal!important;overflow-wrap:normal!important}
+.search-result-symbol{font-size:12px!important;line-height:1.35!important}
+.search-result-name{font-size:10px!important;line-height:1.35!important;margin:0!important}
+.search-result-tag{display:inline-flex!important;align-items:center!important;justify-content:center!important;max-width:72px!important;padding:4px 6px!important;font-size:9px!important;line-height:1.2!important;white-space:nowrap!important}
+.search-empty{padding:14px 8px!important}
+.symbol-search-popover[hidden]{display:none!important}
+.brand{gap:0!important}
+.brand-identity{flex:0 0 auto!important}
+.brandmark{margin-left:9px!important;margin-right:0!important}
+@media(max-width:920px){.brandmark{margin-left:7px!important}}
+@media(max-width:700px){
+ .brand{max-width:calc(100vw - 108px)!important}
+ .brandmark{margin-left:8px!important}
+ .symbol-search-popover{max-height:min(44vh,350px)!important;padding:8px!important}
+ .symbol-search-result{min-height:48px!important;max-height:58px!important;grid-template-columns:32px minmax(0,1fr) auto!important;gap:8px!important;padding:6px 8px!important}
+ .search-result-icon{width:32px!important;height:32px!important;min-width:32px!important;max-width:32px!important;min-height:32px!important;max-height:32px!important}
+ .search-result-symbol{font-size:11px!important}
+ .search-result-name{font-size:9px!important}
+ .search-popover-foot{padding-top:7px!important}
+}
+@media(max-width:390px){.brandmark{margin-left:6px!important}.brand{max-width:calc(100vw - 102px)!important}}
+/* Desktop: stop stretching unrelated controls across the whole canvas; make each tool a deliberate card. */
+@media(min-width:701px){
+ .app{max-width:1480px!important;padding-left:clamp(22px,3vw,48px)!important;padding-right:clamp(22px,3vw,48px)!important}
+ .topbar{gap:clamp(18px,2vw,30px)!important}
+ .brandmark{margin-left:13px!important}
+ .symbol-search-wrap{width:clamp(210px,22vw,300px)!important}
+ .intro{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(300px,390px)!important;align-items:center!important;gap:clamp(24px,3vw,44px)!important}
+ .intro>div:first-child{max-width:650px}
+ .market-head{width:100%!important;min-width:0!important}
+ .main-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:clamp(18px,2vw,28px)!important;align-items:stretch!important}
+ .main-grid>.panel{min-width:0!important;height:100%;border-radius:18px!important}
+ .panel-head{padding:20px 23px 17px!important}
+ .panel-body{padding:22px 23px 24px!important}
+ .field-grid{gap:17px 15px!important}
+ .summary-top{gap:12px!important}
+ .metric{padding:17px!important}
+ .metric-value{font-size:clamp(22px,1.8vw,29px)!important}
+ .key-values{column-gap:22px!important}
+ .kv{padding:12px 0!important}
+ .footgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:20px!important;margin-top:22px!important}
+ .foot-card{padding:22px 24px!important}
+}
+@media(min-width:1100px){
+ .app{max-width:1540px!important}
+ .main-grid{grid-template-columns:minmax(480px,1fr) minmax(440px,.94fr)!important}
+}
+
 </style>
 <style>
 :root{color-scheme:dark;--bg:#171614;--surface:#201e1a;--surface2:#26231e;--surface3:#302c25;--text:#f1eee7;--muted:#a49c8e;--subtle:#797265;--line:rgba(220,202,164,.15);--gold:#c8ad78;--gold2:#e1cca0;--goldWash:rgba(200,173,120,.12);--green:#93b7a0;--red:#d58c83;--shadow:0 20px 60px rgba(0,0,0,.18);--input:#191815;--focus:rgba(200,173,120,.26)}
@@ -596,7 +656,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
           <kbd class="search-shortcut">↵</kbd>
         </div>
         <div class="symbol-search-popover" id="symbolSearchPopover" hidden>
-          <div class="search-popover-top"><span>搜索交易标的</span><span class="search-market-label">USDT 永续</span></div>
+          <div class="search-popover-top"><span>搜索交易标的</span><div class="search-popover-actions"><span class="search-market-label">USDT 永续</span><button type="button" id="collapseSymbolSearch" class="collapse-search-btn" aria-label="收起标的搜索" title="收起搜索面板">收起⌃</button></div></div>
           <div class="search-exchange-row"><label for="searchExchange">行情来源</label><select id="searchExchange"><option value="auto">自动选择</option><option value="binance">Binance 币安优先</option><option value="okx">OKX 欧易优先</option><option value="gate">Gate.io 优先</option></select></div>
           <div id="symbolSearchResults" class="symbol-search-results" role="listbox" aria-label="标的搜索结果"></div>
           <div class="search-popover-foot" id="symbolSearchHint">输入代码或名称，选择匹配的交易标的</div>
