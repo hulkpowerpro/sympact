@@ -55,6 +55,94 @@
  .manage-symbols-btn{font-size:9px}
 }
 
+
+
+/* Desktop composition v2: fluid spacing, balanced header, viewport-aware workspace. */
+@media (min-width:701px){
+  html{scroll-behavior:smooth}
+  .app{
+    width:100%;
+    max-width:1600px;
+    margin-inline:auto;
+    padding:clamp(14px,1.8vw,28px) clamp(16px,2.4vw,38px) 24px;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:clamp(12px,1.6vw,24px);
+    padding:0 0 clamp(12px,1.4vw,20px);
+    min-width:0;
+  }
+  .brand{flex:0 1 auto;min-width:0}
+  .top-actions{
+    flex:0 1 auto;
+    min-width:0;
+    justify-content:flex-end;
+    gap:clamp(6px,.75vw,11px);
+  }
+  .symbol-search-wrap{width:clamp(150px,15vw,220px);height:37px}
+  .status-pill{padding:7px 10px;gap:7px;font-size:10px}
+  .status-pill .dot{
+    width:7px;height:7px;flex:0 0 7px;
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--goldWash) 80%,transparent);
+    transition:background-color .22s ease,box-shadow .22s ease;
+  }
+  .status-pill .dot.ok{box-shadow:0 0 0 3px rgba(147,183,160,.12)}
+  .status-pill .dot.bad{box-shadow:0 0 0 3px rgba(213,140,131,.12)}
+  .status-pill .dot.warn{box-shadow:0 0 0 3px rgba(200,173,120,.13)}
+  #connectionMode{max-width:145px;min-width:0}
+  .icon-btn{width:36px;height:36px;flex:0 0 36px}
+  .intro{padding:clamp(15px,1.8vw,25px) 0 clamp(14px,1.6vw,22px);gap:clamp(16px,2vw,28px)}
+  .intro h1{font-size:clamp(27px,2.5vw,38px);margin:7px 0 8px}
+  .intro p{font-size:12px;max-width:520px}
+  .market-head{min-width:clamp(255px,25vw,330px);padding:11px 14px;border-radius:14px}
+  .main-grid{gap:clamp(12px,1.35vw,19px);grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .panel{border-radius:16px}
+  .panel-head{padding:clamp(13px,1.3vw,19px) clamp(14px,1.55vw,22px) clamp(11px,1.2vw,16px)}
+  .panel-body{padding:clamp(13px,1.55vw,21px)}
+  .field-grid{gap:clamp(10px,1.1vw,16px) clamp(9px,1vw,14px)}
+  .input-wrap input,.input-wrap select,.field>select{height:clamp(39px,3.2vw,44px)}
+  .metric{padding:clamp(11px,1.1vw,15px)}
+  .summary-top{gap:clamp(7px,.8vw,11px)}
+  .kv{padding:clamp(8px,.8vw,11px) 0}
+  .divider{margin:clamp(12px,1.35vw,19px) 0}
+}
+@media (min-width:701px) and (max-width:1100px){
+  .app{padding-left:16px;padding-right:16px}
+  .topbar{flex-wrap:wrap;row-gap:12px}
+  .top-actions{width:100%;justify-content:flex-end}
+  .symbol-search-wrap{width:190px}
+  .intro{align-items:center}
+  .market-head{min-width:245px}
+  .panel-head{gap:9px}
+  .panel-title{gap:8px}
+  .panel-body{padding:13px}
+}
+@media (min-width:1101px) and (max-height:850px){
+  .app{padding-top:14px;padding-bottom:16px}
+  .topbar{padding-bottom:12px}
+  .intro{padding-top:14px;padding-bottom:13px}
+  .intro h1{font-size:30px;margin:5px 0 6px}
+  .intro p{font-size:11px}
+  .market-head{padding:9px 12px}
+  .panel-head{padding-top:12px;padding-bottom:11px}
+  .panel-body{padding-top:13px;padding-bottom:14px}
+  .field-grid{gap:10px 12px}
+  .divider{margin:12px 0}
+  .metric{padding:11px}
+  .kv{padding:8px 0}
+}
+@media (prefers-reduced-motion: no-preference) and (min-width:701px){
+  .panel,.market-head,.symbol-search-wrap,.status-pill,.icon-btn,.manage-symbols-btn{
+    transition:transform .2s cubic-bezier(.2,.7,.2,1),border-color .2s ease,background-color .2s ease,box-shadow .2s ease;
+  }
+  .panel:hover{border-color:rgba(220,202,164,.22)}
+}
+/* The connection dot is a status indicator, not decoration: keep it small and optically centered. */
+.status-pill{align-items:center;line-height:1.2}
+.status-pill .dot{display:block;flex:0 0 6px;margin:0}
+
 </style>
 <style>
 :root{color-scheme:dark;--bg:#171614;--surface:#201e1a;--surface2:#26231e;--surface3:#302c25;--text:#f1eee7;--muted:#a49c8e;--subtle:#797265;--line:rgba(220,202,164,.15);--gold:#c8ad78;--gold2:#e1cca0;--goldWash:rgba(200,173,120,.12);--green:#93b7a0;--red:#d58c83;--shadow:0 20px 60px rgba(0,0,0,.18);--input:#191815;--focus:rgba(200,173,120,.26)}
