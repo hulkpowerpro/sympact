@@ -21,7 +21,7 @@
   const FAVORITES_KEY='sympact-favorite-symbols-v1';
   function readFavorites(){try{const saved=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'null');return Array.isArray(saved)?[...new Set(saved.map(normalizeSymbol).filter(Boolean))]:DEFAULT_FAVORITES.slice();}catch(_){return DEFAULT_FAVORITES.slice();}}
   let favoriteSymbols=readFavorites();
-  function normalizeSymbol(value){const s=String(value||'').trim().toUpperCase().replace(/[\\s\\/_-]/g,'');if(!/^[A-Z0-9]{2,24}USDT$/.test(s))return '';return s;}
+  function normalizeSymbol(value){const s=String(value||'').trim().toUpperCase().replace(/[\s\/_-]/g,'');if(!/^[A-Z0-9]{2,24}USDT$/.test(s))return '';return s;}
   function saveFavorites(){try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(favoriteSymbols));}catch(_){};renderFavoriteSymbols();}
   function symbolLabel(symbol){return symbol.endsWith('USDT')?symbol.slice(0,-4)+' / USDT':symbol;}
   function renderFavoriteSymbols(){
