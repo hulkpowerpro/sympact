@@ -796,6 +796,46 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
   .panel-head .symbol-picker .symbol-select{width:132px!important;min-width:132px!important;max-width:132px!important}
 }
 </style>
+<style id="mobile-risk-header-single-row-v30">
+/* Keep the risk panel title and symbol selector on one compact row on phones. */
+@media(max-width:700px){
+  .main-grid .panel[data-mobile-panel="risk"] .panel-head{
+    flex-wrap:nowrap!important;
+    row-gap:0!important;
+    gap:8px!important;
+    align-items:center!important;
+  }
+  .main-grid .panel[data-mobile-panel="risk"] .panel-head .panel-title{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    gap:7px!important;
+  }
+  .main-grid .panel[data-mobile-panel="risk"] .panel-head .panel-title>div{min-width:0!important}
+  .main-grid .panel[data-mobile-panel="risk"] .panel-head .panel-title p{
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  .main-grid .panel[data-mobile-panel="risk"] .panel-head .symbol-picker{
+    flex:0 0 auto!important;
+    margin-left:auto!important;
+    max-width:42%!important;
+  }
+  .main-grid .panel[data-mobile-panel="risk"] .panel-head .symbol-picker .symbol-select{
+    width:clamp(112px,35vw,132px)!important;
+    min-width:112px!important;
+    max-width:132px!important;
+    font-size:14px!important;
+    padding-left:7px!important;
+    padding-right:6px!important;
+  }
+}
+@media(max-width:360px){
+  .main-grid .panel[data-mobile-panel="risk"] .panel-head .symbol-picker .symbol-select{
+    width:108px!important;min-width:108px!important;max-width:108px!important
+  }
+}
+</style>
 <style id="stable-search-input-v26">/* v26 stable fallback: remove faulty toggle; give the search input the full usable field. */
 #symbolSearchWrap .symbol-search-field{display:flex!important;align-items:center!important;gap:10px!important;padding:0 12px!important;box-sizing:border-box!important;cursor:text!important}
 #symbolSearchWrap #symbolSearch{display:block!important;position:static!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;height:100%!important;margin:0!important;padding:0!important;pointer-events:auto!important;visibility:visible!important;opacity:1!important;z-index:auto!important;cursor:text!important}
