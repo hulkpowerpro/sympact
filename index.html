@@ -750,6 +750,22 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
  #symbolSearchWrap #symbolSearch{font-size:12px!important}
 }
 </style>
+<style id="mobile-search-zoom-and-symbol-width-v28">
+/* Mobile Safari zoom prevention: focused search text must remain at least 16px. */
+@media(max-width:700px),(pointer:coarse){
+  #symbolSearchWrap #symbolSearch{font-size:16px!important;line-height:1.25!important}
+}
+/* Give the risk-position symbol selector enough room for its label without squeezing the heading. */
+@media(max-width:700px){
+  .panel-head{flex-wrap:wrap!important;align-items:center!important;row-gap:10px!important}
+  .panel-head .panel-title{flex:1 1 155px!important;min-width:0!important}
+  .panel-head .symbol-picker{flex:0 0 auto!important;margin-left:auto!important;max-width:100%!important}
+  .panel-head .symbol-picker .symbol-select{width:clamp(132px,40vw,158px)!important;min-width:132px!important;max-width:158px!important;font-size:16px!important;padding-left:9px!important;padding-right:7px!important}
+}
+@media(max-width:390px){
+  .panel-head .symbol-picker .symbol-select{width:132px!important;min-width:132px!important;max-width:132px!important}
+}
+</style>
 <style id="stable-search-input-v26">/* v26 stable fallback: remove faulty toggle; give the search input the full usable field. */
 #symbolSearchWrap .symbol-search-field{display:flex!important;align-items:center!important;gap:10px!important;padding:0 12px!important;box-sizing:border-box!important;cursor:text!important}
 #symbolSearchWrap #symbolSearch{display:block!important;position:static!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;height:100%!important;margin:0!important;padding:0!important;pointer-events:auto!important;visibility:visible!important;opacity:1!important;z-index:auto!important;cursor:text!important}
