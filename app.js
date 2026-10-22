@@ -580,7 +580,7 @@
       const feed=$('chinaFeedSettings');
       if(feed) feed.open=true;
     }
-    window.scrollTo({top:0,behavior:'auto'});
+    // Keep the fixed bottom dock anchored; do not force-scroll the iOS visual viewport on tab changes.
   }
   mobileNavButtons.forEach(btn=>btn.addEventListener('click',()=>setMobileTab(btn.dataset.mobileTab)));
   const riskViewButtons = document.querySelectorAll('[data-risk-view]');
@@ -592,7 +592,7 @@
       btn.classList.toggle('is-active',active);
       btn.setAttribute('aria-selected',String(active));
     });
-    if(window.matchMedia('(max-width: 700px)').matches) window.scrollTo({top:0,behavior:'auto'});
+    // Avoid visual-viewport jumps on iOS Safari when switching calculator subviews.
   }
   riskViewButtons.forEach(btn=>btn.addEventListener('click',()=>setRiskView(btn.dataset.riskView)));
   if(window.matchMedia('(max-width: 700px)').matches){setMobileTab('risk');setRiskView('inputs');}
