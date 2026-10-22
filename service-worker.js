@@ -6,6 +6,7 @@ const CACHE_NAME = 'sympact-shell-v3';
 const SHELL_FILES = [
   './',
   './index.html',
+  './assets/sympact-octopus.webp',
   './app.js',
   './install.js',
   './manifest.webmanifest',
