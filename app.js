@@ -16,7 +16,38 @@
   function writeFastCache(){try{localStorage.setItem(FAST_CACHE_KEY,JSON.stringify({symbol:state.symbol,contractPrice:state.contractPrice,markPrice:state.markPrice,provider:state.activeProvider,root:state.activeRoot,futuresRoot:state.futuresRoot,spotRoot:state.spotRoot,okxRoot:state.okxRoot,gateRoot:state.gateRoot,coinbaseRoot:state.coinbaseRoot,krakenRoot:state.krakenRoot,klines:state.klines,lastFetch:state.lastFetch?state.lastFetch.getTime():Date.now()}));}catch(_){}}
   const previousFastCache=readFastCache();
   if(previousFastCache){for(const key of ['futuresRoot','spotRoot','okxRoot','gateRoot','coinbaseRoot','krakenRoot'])if(previousFastCache[key])state[key]=previousFastCache[key];}
-  const coinSymbols = {BTCUSDT:'₿',ETHUSDT:'◆',SOLUSDT:'◎',BNBUSDT:'◆',XRPUSDT:'✦',DOGEUSDT:'Ð'};
+  const coinSymbols = {BTCUSDT:'₿',ETHUSDT:'◆',SOLUSDT:'◎',BNBUSDT:'◆',XRPUSDT:'✦',DOGEUSDT:'Ð',XAUUSDT:'Au',PAXGUSDT:'Au',QQQUSDT:'Q'};
+  const DEFAULT_FAVORITES=['BTCUSDT','ETHUSDT','SOLUSDT','BNBUSDT','XRPUSDT','DOGEUSDT'];
+  const FAVORITES_KEY='sympact-favorite-symbols-v1';
+  function readFavorites(){try{const saved=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'null');return Array.isArray(saved)?[...new Set(saved.map(normalizeSymbol).filter(Boolean))]:DEFAULT_FAVORITES.slice();}catch(_){return DEFAULT_FAVORITES.slice();}}
+  let favoriteSymbols=readFavorites();
+  function normalizeSymbol(value){const s=String(value||'').trim().toUpperCase().replace(/[\\s\\/_-]/g,'');if(!/^[A-Z0-9]{2,24}USDT$/.test(s))return '';return s;}
+  function saveFavorites(){try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(favoriteSymbols));}catch(_){};renderFavoriteSymbols();}
+  function symbolLabel(symbol){return symbol.endsWith('USDT')?symbol.slice(0,-4)+' / USDT':symbol;}
+  function renderFavoriteSymbols(){
+    const select=$('symbolSelect');if(!select)return;
+    const current=state.symbol;
+    const list=[...new Set([...favoriteSymbols,current])];
+    select.innerHTML='';
+    list.forEach(symbol=>{const option=document.createElement('option');option.value=symbol;option.textContent=symbolLabel(symbol);select.appendChild(option);});
+    select.value=current;
+    const chips=$('favoriteChips');if(chips){chips.innerHTML='';favoriteSymbols.forEach(symbol=>{const chip=document.createElement('span');chip.className='favorite-chip';const label=document.createElement('span');label.textContent=symbolLabel(symbol);chip.appendChild(label);const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','移除 '+symbol);remove.addEventListener('click',()=>{if(favoriteSymbols.length<=1){showToast('至少保留一个常用标的');return;}favoriteSymbols=favoriteSymbols.filter(x=>x!==symbol);saveFavorites();});chip.appendChild(remove);chips.appendChild(chip);});}
+  }
+  function addFavoriteSymbol(raw){
+    const symbol=normalizeSymbol(raw);if(!symbol){showToast('请输入有效格式，例如 BTCUSDT');return;}
+    if(!favoriteSymbols.includes(symbol)){favoriteSymbols.push(symbol);saveFavorites();}
+    $('symbolSearch').value='';
+    $('symbolSelect').value=symbol;
+    if(symbol!==state.symbol)changeSymbol();
+    else showToast('已在当前标的');
+    const manager=$('favoritesManager');if(manager&&!manager.hidden)renderFavoriteSymbols();
+  }
+  function populateSymbolSuggestions(){
+    const list=$('symbolSearchOptions');if(!list)return;
+    const known=state.exchangeInfo&&Array.isArray(state.exchangeInfo.symbols)?state.exchangeInfo.symbols.filter(s=>s.status==='TRADING'&&s.quoteAsset==='USDT'&&s.contractType==='PERPETUAL').map(s=>s.symbol):[];
+    const symbols=[...new Set([...favoriteSymbols,...known,'XAUUSDT','QQQUSDT','PAXGUSDT'])];
+    list.innerHTML='';symbols.forEach(symbol=>{const option=document.createElement('option');option.value=symbol;list.appendChild(option);});
+  }
   // Mainland-first source order tries OKX and Gate public linear swaps before Binance. Bybit documents a 403 restriction for mainland-China IPs, so it is not in the automatic connection path.
   // Price is decoupled from candles: a K-line failure must not erase a working live ticker. Public relays are a last resort.
   const FUTURES_ROOTS=['https://fapi.binance.com','https://fapi1.binance.com','https://fapi2.binance.com','https://fapi3.binance.com','https://fapi4.binance.com'];
@@ -270,7 +301,7 @@
       const rootInfo=await firstWorkingRoot(FUTURES_ROOTS,'/fapi/v1/ticker/price?symbol=BTCUSDT',validBinanceTicker,state.futuresRoot);state.futuresRoot=rootInfo.root;
       const data=await getJSON(rootURL(state.futuresRoot,'/fapi/v1/exchangeInfo'),10000);
       if(!Array.isArray(data.symbols))throw new Error('exchangeInfo format invalid');
-      state.exchangeInfo=data;state.exchangeLoaded=true;applyFilters();
+      state.exchangeInfo=data;state.exchangeLoaded=true;applyFilters();populateSymbolSuggestions();
     }catch(e){console.warn('Binance exchangeInfo unavailable',e);state.filtersVerified=false;state.filterSource='fallback';updateUnit();if(!state.priceLoaded)setStatus('warn','行情已尝试连接 · 币安交易规则暂未读取');}
   }
   function applyFilters(){
@@ -548,6 +579,11 @@
   $('refreshMarket').addEventListener('click',async()=>{const b=$('refreshMarket');b.classList.add('refreshing');setStatus('','正在重试当前策略下的公开行情源');try{if(!state.filtersVerified)loadExchangeInfo().catch(e=>console.warn('Exchange rules fetch failed',e));await loadMarket({klines:true});}finally{b.classList.remove('refreshing');}});
   $('longBtn').addEventListener('click',()=>setSide('long'));$('shortBtn').addEventListener('click',()=>setSide('short'));
   $('symbolSelect').addEventListener('change',changeSymbol);
+  $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();addFavoriteSymbol($('symbolSearch').value);}});
+  $('addSymbolBtn').addEventListener('click',()=>addFavoriteSymbol($('symbolSearch').value));
+  $('manageSymbolsBtn').addEventListener('click',()=>{const panel=$('favoritesManager'),open=panel.hidden;panel.hidden=!open;$('manageSymbolsBtn').setAttribute('aria-expanded',String(open));if(open)renderFavoriteSymbols();});
+  document.addEventListener('click',event=>{const picker=$('symbolPicker');if(picker&&!picker.contains(event.target)&&!$('manageSymbolsBtn').contains(event.target)){const panel=$('favoritesManager');if(panel&&!panel.hidden){panel.hidden=true;$('manageSymbolsBtn').setAttribute('aria-expanded','false');}}});
+  renderFavoriteSymbols();populateSymbolSuggestions();
   $('workingType').addEventListener('change',()=>{updateMarketUI();if($('followMarket').checked&&livePrice())$('entry').value=String(livePrice());calculate();});
   $('followMarket').addEventListener('change',()=>{if($('followMarket').checked){delete $('entry').dataset.userEdited;if(livePrice())$('entry').value=String(livePrice());}calculate();});
   $('intervalSelect').addEventListener('change',()=>loadMarket({klines:true}));
