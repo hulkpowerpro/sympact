@@ -796,8 +796,8 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
   .panel-head .symbol-picker .symbol-select{width:132px!important;min-width:132px!important;max-width:132px!important}
 }
 </style>
-<style id="toast-safe-area-and-four-card-alignment-v32">
-/* Keep transient toast above the fixed mobile navigation and device safe area. */
+<style id="toast-safe-area-and-four-card-alignment-v33">
+/* Mobile toast: stay above the fixed bottom navigation and device safe area. */
 @media(max-width:700px){
   .toast{
     bottom:calc(82px + env(safe-area-inset-bottom, 0px))!important;
@@ -805,7 +805,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
     text-align:center!important;
   }
 }
-/* Match the lower cards to the real desktop grid above, including its wider-screen column ratio. */
+/* Keep the footer cards on the exact same responsive grid as the main cards. */
 @media(min-width:701px){
   .footgrid{
     width:calc(100% - 2 * clamp(22px, 3vw, 48px))!important;
@@ -832,48 +832,14 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
     box-sizing:border-box!important;
   }
 }
+/* The main grid collapses to one column at 920px; mirror that breakpoint below. */
+@media(min-width:701px) and (max-width:920px){
+  .footgrid{grid-template-columns:minmax(0,1fr)!important}
+}
+/* At 1100px the main grid switches to a 1fr / .94fr split; mirror it exactly. */
 @media(min-width:1100px){
   .footgrid{
     grid-template-columns:minmax(480px,1fr) minmax(440px,.94fr)!important;
-  }
-}
-<style id="mobile-risk-header-single-row-v30">
-/* Keep the risk panel title and symbol selector on one compact row on phones. */
-@media(max-width:700px){
-  .main-grid .panel[data-mobile-panel="risk"] .panel-head{
-    flex-wrap:nowrap!important;
-    row-gap:0!important;
-    gap:8px!important;
-    align-items:center!important;
-  }
-  .main-grid .panel[data-mobile-panel="risk"] .panel-head .panel-title{
-    flex:1 1 auto!important;
-    min-width:0!important;
-    gap:7px!important;
-  }
-  .main-grid .panel[data-mobile-panel="risk"] .panel-head .panel-title>div{min-width:0!important}
-  .main-grid .panel[data-mobile-panel="risk"] .panel-head .panel-title p{
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    white-space:nowrap!important;
-  }
-  .main-grid .panel[data-mobile-panel="risk"] .panel-head .symbol-picker{
-    flex:0 0 auto!important;
-    margin-left:auto!important;
-    max-width:42%!important;
-  }
-  .main-grid .panel[data-mobile-panel="risk"] .panel-head .symbol-picker .symbol-select{
-    width:clamp(112px,35vw,132px)!important;
-    min-width:112px!important;
-    max-width:132px!important;
-    font-size:14px!important;
-    padding-left:7px!important;
-    padding-right:6px!important;
-  }
-}
-@media(max-width:360px){
-  .main-grid .panel[data-mobile-panel="risk"] .panel-head .symbol-picker .symbol-select{
-    width:108px!important;min-width:108px!important;max-width:108px!important
   }
 }
 </style>
