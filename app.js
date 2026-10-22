@@ -108,8 +108,8 @@
       }
     }
   }
-  function openSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=false;$('symbolSearch').setAttribute('aria-expanded','true');const b=$('collapseSymbolSearch');if(b){b.setAttribute('aria-expanded','true');b.setAttribute('aria-label','收起搜索结果');}renderSearchResults();}
-  function closeSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=true;$('symbolSearch').setAttribute('aria-expanded','false');const b=$('collapseSymbolSearch');if(b){b.setAttribute('aria-expanded','false');b.setAttribute('aria-label','展开搜索结果');}}
+  function openSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=false;$('symbolSearch').setAttribute('aria-expanded','true');renderSearchResults();}
+  function closeSearchPopover(){const pop=$('symbolSearchPopover');if(!pop)return;pop.hidden=true;$('symbolSearch').setAttribute('aria-expanded','false');}
   function selectSearchSymbol(symbol,allowUnknown=false){
     const exchange=activeSearchExchange();
     if(!symbolSupported(symbol,exchange)&&!allowUnknown){showToast('当前来源未确认支持 '+symbol+'，请换来源或点“验证”');return;}
@@ -665,13 +665,6 @@
   $('symbolSelect').addEventListener('change',changeSymbol);
   $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();addFavoriteSymbol($('symbolSearch').value);}});
   $('symbolSearch').addEventListener('focus',openSearchPopover);
-  $('collapseSymbolSearch')?.addEventListener('pointerdown',event=>{event.preventDefault();});
-  $('collapseSymbolSearch')?.addEventListener('click',event=>{
-    event.preventDefault();event.stopPropagation();
-    const pop=$('symbolSearchPopover');
-    if(pop?.hidden){openSearchPopover();$('collapseSymbolSearch').setAttribute('aria-expanded','true');$('collapseSymbolSearch').setAttribute('aria-label','收起搜索结果');}
-    else{closeSearchPopover();$('collapseSymbolSearch').setAttribute('aria-expanded','false');$('collapseSymbolSearch').setAttribute('aria-label','展开搜索结果');}
-  });
   
   $('symbolSearch').addEventListener('input',()=>{openSearchPopover();renderSearchResults();});
   $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Escape'){closeSearchPopover();return;}if(event.key==='Enter'){event.preventDefault();const first=$('symbolSearchResults')?.querySelector('.symbol-search-result');if(first)first.click();else addFavoriteSymbol($('symbolSearch').value);}});
