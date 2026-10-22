@@ -1,7 +1,7 @@
 
 /* SYMPACT PWA Service Worker — cache-first shell, network-fresh market data */
 
-const CACHE_NAME = 'sympact-shell-v26';
+const CACHE_NAME = 'sympact-shell-v27';
 
 const SHELL_FILES = [
   './',
