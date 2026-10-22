@@ -335,32 +335,37 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 }
 
 
-/* Brand lockup v2: word first, octopus on the right with tentacles overlapping the lettering. */
+/* Brand lockup v3: compact subtitle, clear separation from the octopus silhouette. */
 .brand{position:relative!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:0!important}
-.brand-identity{order:1!important;position:relative!important;z-index:2!important;min-width:0!important}
-.brandmark{order:2!important;position:relative!important;z-index:3!important;width:70px!important;height:76px!important;flex:0 0 70px!important;margin-left:-18px!important;margin-right:0!important;overflow:visible!important;pointer-events:none}
-.brandmark img{width:86px!important;height:86px!important;max-width:none!important;transform:translate(-2px,-10px)!important;object-fit:contain!important;pointer-events:none}
-.brandname{letter-spacing:.16em!important;white-space:nowrap!important}
-.brandline{max-width:260px!important}
+.brand-identity{order:1!important;position:relative!important;z-index:2!important;min-width:0!important;flex:0 1 auto!important}
+.brandmark{order:2!important;position:relative!important;z-index:3!important;width:64px!important;height:72px!important;flex:0 0 64px!important;margin-left:-8px!important;margin-right:0!important;overflow:visible!important;pointer-events:none}
+.brandmark img{width:78px!important;height:78px!important;max-width:none!important;transform:translate(-1px,-7px)!important;object-fit:contain!important;pointer-events:none}
+.brandname{font-size:24px!important;letter-spacing:.15em!important;white-space:nowrap!important}
+.brandsub{display:flex!important;align-items:center!important;gap:4px!important;white-space:nowrap!important;font-size:8px!important;letter-spacing:.035em!important;line-height:1.2!important;margin-top:4px!important}
+.brand-divider{margin:0!important;opacity:.65}
+.brandline{max-width:205px!important;margin-top:5px!important}
 @media(max-width:920px){
- .brandmark{width:62px!important;height:68px!important;flex-basis:62px!important;margin-left:-16px!important}
- .brandmark img{width:76px!important;height:76px!important;transform:translate(-1px,-8px)!important}
- .brandname{font-size:22px!important;letter-spacing:.14em!important}
+ .brandmark{width:56px!important;height:64px!important;flex-basis:56px!important;margin-left:-6px!important}
+ .brandmark img{width:68px!important;height:68px!important;transform:translate(0,-5px)!important}
+ .brandname{font-size:21px!important;letter-spacing:.12em!important}
+ .brandsub{font-size:7px!important;letter-spacing:.025em!important;gap:3px!important}
+ .brandline{max-width:175px!important}
 }
 @media(max-width:700px){
  .brand{gap:0!important;max-width:calc(100vw - 112px)!important}
- .brandmark{width:48px!important;height:54px!important;flex-basis:48px!important;margin-left:-11px!important}
- .brandmark img{width:61px!important;height:61px!important;transform:translate(0,-6px)!important}
- .brandname{font-size:clamp(15px,4.2vw,19px)!important;letter-spacing:.105em!important}
- .brandsub{font-size:5.5px!important;letter-spacing:.045em!important}
- .brandline{max-width:145px!important}
+ .brandmark{width:45px!important;height:52px!important;flex-basis:45px!important;margin-left:-4px!important}
+ .brandmark img{width:56px!important;height:56px!important;transform:translate(0,-4px)!important}
+ .brandname{font-size:clamp(15px,4.2vw,18px)!important;letter-spacing:.085em!important}
+ .brandsub{font-size:5.8px!important;letter-spacing:0!important;gap:2px!important;margin-top:3px!important}
+ .brandline{max-width:140px!important;margin-top:4px!important}
 }
 @media(max-width:390px){
  .brand{max-width:calc(100vw - 100px)!important}
- .brandmark{width:40px!important;height:48px!important;flex-basis:40px!important;margin-left:-9px!important}
- .brandmark img{width:52px!important;height:52px!important;transform:translate(0,-5px)!important}
- .brandname{font-size:15px!important;letter-spacing:.075em!important}
- .brandsub{font-size:5px!important;letter-spacing:.025em!important}
+ .brandmark{width:38px!important;height:45px!important;flex-basis:38px!important;margin-left:-3px!important}
+ .brandmark img{width:48px!important;height:48px!important;transform:translate(0,-3px)!important}
+ .brandname{font-size:15px!important;letter-spacing:.06em!important}
+ .brandsub{font-size:5.2px!important;letter-spacing:0!important;gap:2px!important}
+ .brandline{max-width:120px!important}
 }
 
 </style>
