@@ -271,6 +271,14 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 }
 @media(min-width:701px){.mobile-risk-switch{display:none!important}}
 
+/* Fail-safe: never leave the mobile workspace blank if the app script is delayed or fails. */
+@media(max-width:700px){
+  .main-grid .panel[data-mobile-panel="risk"]{display:block}
+  body.mobile-tab-trail .main-grid .panel[data-mobile-panel="risk"],
+  body.mobile-tab-more .main-grid .panel[data-mobile-panel="risk"]{display:none!important}
+  body:not(.mobile-tab-trail):not(.mobile-tab-more) .main-grid .panel[data-mobile-panel="risk"]{display:block}
+}
+
 </style>
 </head>
 <body>
@@ -434,6 +442,37 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
   <button class="mobile-nav-btn" type="button" data-mobile-tab="more"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg><span>设置与说明</span></button>
 </nav>
 <div class="toast" id="toast">已复制</div>
+<script>
+/* Small standalone navigation bootstrap: keep mobile tabs responsive even if app.js is delayed. */
+(function(){
+  var mq=window.matchMedia('(max-width: 700px)');
+  var nav=document.querySelector('.mobile-workspace-nav');
+  if(!nav) return;
+  var buttons=nav.querySelectorAll('[data-mobile-tab]');
+  function activate(tab){
+    document.body.classList.remove('mobile-tab-risk','mobile-tab-trail','mobile-tab-more');
+    document.body.classList.add('mobile-tab-'+tab);
+    buttons.forEach(function(btn){
+      if(btn.getAttribute('data-mobile-tab')===tab) btn.setAttribute('aria-current','page');
+      else btn.removeAttribute('aria-current');
+    });
+    if(tab==='more'){
+      var settings=document.getElementById('chinaFeedSettings');
+      if(settings) settings.open=true;
+    }
+    if(mq.matches) window.scrollTo(0,0);
+  }
+  buttons.forEach(function(btn){btn.addEventListener('click',function(){activate(btn.getAttribute('data-mobile-tab'));});});
+  if(mq.matches) activate('risk');
+  function viewportChanged(e){
+    if(e.matches) activate('risk');
+    else document.body.classList.remove('mobile-tab-risk','mobile-tab-trail','mobile-tab-more');
+  }
+  if(mq.addEventListener) mq.addEventListener('change',viewportChanged);
+  else if(mq.addListener) mq.addListener(viewportChanged);
+})();
+</script>
+
 <script src="./app.js" defer></script>
 
 <script src="./install.js" defer></script>
