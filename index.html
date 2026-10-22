@@ -279,6 +279,12 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
     return units * step;
   };
   const state = {side:'long',symbol:'BTCUSDT',contractPrice:null,markPrice:null,atr:null,atrPct:null,klines:[],stepSize:0.001,tickSize:0.1,minQty:0.001,minNotional:5,baseAsset:'BTC',priceLoaded:false,exchangeLoaded:false,filtersVerified:false,filterSource:'fallback',lastFetch:null,timer:null,klineTimer:null,fetching:false,marketRequestId:0,klineRequestId:0,activeProvider:null,activeRoot:null,connectionMode:'mainland',forceAicoin:false,aicoinRoot:'https://open.aicoin.com',futuresRoot:null,spotRoot:null,bybitRoot:null,okxRoot:null,gateRoot:null,coinbaseRoot:null,krakenRoot:null,marketErrors:[],atrSource:null};
+  // Warm-start cache: show the last quote/candles immediately, then refresh from live public feeds.
+  const FAST_CACHE_KEY='sympact-fast-cache-v1';
+  function readFastCache(){try{return JSON.parse(localStorage.getItem(FAST_CACHE_KEY)||'null');}catch(_){return null;}}
+  function writeFastCache(){try{localStorage.setItem(FAST_CACHE_KEY,JSON.stringify({symbol:state.symbol,contractPrice:state.contractPrice,markPrice:state.markPrice,provider:state.activeProvider,root:state.activeRoot,futuresRoot:state.futuresRoot,spotRoot:state.spotRoot,okxRoot:state.okxRoot,gateRoot:state.gateRoot,coinbaseRoot:state.coinbaseRoot,krakenRoot:state.krakenRoot,klines:state.klines,lastFetch:state.lastFetch?state.lastFetch.getTime():Date.now()}));}catch(_){}}
+  const previousFastCache=readFastCache();
+  if(previousFastCache){for(const key of ['futuresRoot','spotRoot','okxRoot','gateRoot','coinbaseRoot','krakenRoot'])if(previousFastCache[key])state[key]=previousFastCache[key];}
   const coinSymbols = {BTCUSDT:'₿',ETHUSDT:'◆',SOLUSDT:'◎',BNBUSDT:'◆',XRPUSDT:'✦',DOGEUSDT:'Ð'};
   // Mainland-first source order tries OKX and Gate public linear swaps before Binance. Bybit documents a 403 restriction for mainland-China IPs, so it is not in the automatic connection path.
   // Price is decoupled from candles: a K-line failure must not erase a working live ticker. Public relays are a last resort.
@@ -523,7 +529,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
   async function loadKlineFallback(symbol,klineToken,primaryId){
     const all=['okx-swap','aicoin-aggregated','gate-futures','binance-futures','binance-spot','coinbase-spot','kraken-spot'];const order=[primaryId,...all.filter(id=>id!==primaryId)];
     const errors=[];
-    for(const id of order){try{const r=await fetchKlinesFrom(id,symbol);if(symbol!==state.symbol||klineToken!==state.klineRequestId)return false;if(validateKlines(r.klines)){state.klines=r.klines;state.atrSource=r.source;computeATR(r.klines);drawSparkline(r.klines);updateMarketUI();calculate();return true;}}catch(e){errors.push(id+': '+(e&&e.message||e));}}
+    for(const id of order){try{const r=await fetchKlinesFrom(id,symbol);if(symbol!==state.symbol||klineToken!==state.klineRequestId)return false;if(validateKlines(r.klines)){state.klines=r.klines;state.atrSource=r.source;computeATR(r.klines);drawSparkline(r.klines);updateMarketUI();calculate();writeFastCache();return true;}}catch(e){errors.push(id+': '+(e&&e.message||e));}}
     if(symbol===state.symbol&&klineToken===state.klineRequestId){state.atr=null;state.atrPct=null;state.atrSource=null;$('atrUnit').textContent='自动 ATR 读取失败 · 可手动填 ATR%';$('callbackExplain').textContent='价格行情可用，但所有 K 线源均失败。请尝试手动填写 ATR%，或稍后重试。诊断：'+errors.join(' | ');calculate();}
     return false;
   }
@@ -563,7 +569,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
         const preferred=order[0];let delayTimer;
         const first=await Promise.race([
           loaders[preferred](symbol,false).then(result=>({kind:'success',result}),error=>({kind:'failure',error})),
-          new Promise(resolve=>{delayTimer=setTimeout(()=>resolve({kind:'timeout'}),preferred==='aicoin-aggregated'?6500:1800);})
+          new Promise(resolve=>{delayTimer=setTimeout(()=>resolve({kind:'timeout'}),preferred==='aicoin-aggregated'?1200:600);})
         ]);
         clearTimeout(delayTimer);
         if(first.kind==='success'&&Number(first.result.contractPrice)>0)accepted=first.result;
@@ -597,7 +603,7 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
       }
       if(!(Number(accepted.contractPrice)>0))throw new Error('所有数据源返回的价格均无效');
       state.contractPrice=Number(accepted.contractPrice);state.markPrice=Number(accepted.markPrice)>0?Number(accepted.markPrice):null;
-      state.priceLoaded=true;state.activeProvider=accepted.id;state.activeRoot=accepted.root;state.lastFetch=new Date();$('connectionDiagnostic').style.display='none';
+      state.priceLoaded=true;state.activeProvider=accepted.id;state.activeRoot=accepted.root;state.lastFetch=new Date();$('connectionDiagnostic').style.display='none';writeFastCache();
       if(klines){state.klines=[];state.atr=null;state.atrPct=null;state.atrSource=null;drawSparkline([]);}
       if($('followMarket').checked&&!Number($('entry').dataset.userEdited||0))$('entry').value=String(livePrice()||state.contractPrice);
       updateMarketUI();calculate();
@@ -822,8 +828,16 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
     const card=[`SYMPACT RISK DESK · ${state.symbol}`,`方向：${state.side==='long'?'做多 LONG':'做空 SHORT'}`,`账户权益：${$('equity').value||'—'} USDT`,`入场价：${$('entry').value||'—'}`,`初始止损：${$('stop').value||'—'}`,`单笔风险比例：${$('riskPct').value}%`,`风险预算：${$('riskOut').textContent} USDT`,`建议数量：${$('qtyOut').textContent} ${state.baseAsset}`,`名义仓位：${$('notionalOut').textContent} USDT`,`杠杆参考：${$('leverage').value}x`,`跟踪激活价：${$('activationOut').textContent}`,`建议回调率：${$('callbackUnit').textContent?$('callbackMain').textContent+'%':$('callbackMain').textContent}`,`ATR周期：${$('intervalSelect').selectedOptions[0].textContent}`,`触发参考：${$('workingType').selectedOptions[0].textContent}`,`提示：跟踪止损不替代初始保护止损；最终参数请在币安下单界面核对。`].join('\n');
     try{await navigator.clipboard.writeText(card);showToast('执行卡已复制');}catch(e){const ta=document.createElement('textarea');ta.value=card;document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();showToast(ok?'执行卡已复制':'复制失败，请手动复制');}
   });
+  // Restore the last successful snapshot for near-instant warm starts; live data replaces it when available.
+  if(previousFastCache&&previousFastCache.symbol===state.symbol&&Number(previousFastCache.contractPrice)>0){
+    state.contractPrice=Number(previousFastCache.contractPrice);state.markPrice=Number(previousFastCache.markPrice)||null;
+    state.activeProvider=previousFastCache.provider||null;state.activeRoot=previousFastCache.root||null;state.priceLoaded=true;
+    state.lastFetch=Number(previousFastCache.lastFetch)>0?new Date(Number(previousFastCache.lastFetch)):new Date();
+    if(Array.isArray(previousFastCache.klines)&&previousFastCache.klines.length>=16){state.klines=previousFastCache.klines;computeATR(state.klines);drawSparkline(state.klines);}
+    updateMarketUI();calculate();setStatus('warn','已显示上次行情 · 正在验证实时数据');
+  }
   // Initial boot and lightweight refresh; public endpoints only, no API key.
-  (async()=>{loadExchangeInfo().catch(e=>console.warn('Exchange rules fetch failed',e));await loadMarket({klines:true});state.timer=setInterval(()=>loadMarket({klines:false}),10000);state.klineTimer=setInterval(()=>loadMarket({klines:true}),60000);})();
+  (async()=>{loadExchangeInfo().catch(e=>console.warn('Exchange rules fetch failed',e));await loadMarket({klines:!Array.isArray(previousFastCache?.klines)||previousFastCache.klines.length<16});state.timer=setInterval(()=>loadMarket({klines:false}),10000);state.klineTimer=setInterval(()=>loadMarket({klines:true}),60000);})();
 })();
 </script>
 
