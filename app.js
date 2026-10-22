@@ -665,6 +665,7 @@
   $('symbolSelect').addEventListener('change',changeSymbol);
   $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();addFavoriteSymbol($('symbolSearch').value);}});
   $('symbolSearch').addEventListener('focus',openSearchPopover);
+  $('collapseSymbolSearch')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();closeSearchPopover();});
   $('symbolSearch').addEventListener('input',()=>{openSearchPopover();renderSearchResults();});
   $('symbolSearch').addEventListener('keydown',event=>{if(event.key==='Escape'){closeSearchPopover();return;}if(event.key==='Enter'){event.preventDefault();const first=$('symbolSearchResults')?.querySelector('.symbol-search-result');if(first)first.click();else addFavoriteSymbol($('symbolSearch').value);}});
   $('searchExchange').addEventListener('change',renderSearchResults);
