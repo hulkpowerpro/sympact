@@ -912,6 +912,17 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
     <div class="startup-track" aria-hidden="true"></div>
   </div>
 </div>
+<script>
+/* Startup watchdog: reveal the usable shell even if deferred app.js or market APIs are slow. */
+(function(){
+  var splash=document.getElementById("startupSplash");
+  if(!splash) return;
+  window.setTimeout(function(){
+    splash.classList.add("is-hidden");
+    window.setTimeout(function(){ if(splash.isConnected) splash.remove(); },260);
+  },450);
+})();
+</script>
 <div class="app">
   <header class="topbar">
     <div class="brand" aria-label="SYMPACT 风险工作台">
