@@ -904,8 +904,18 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
 </style>
 <style id="mobile-callback-card-overflow-fix">
 @media (max-width: 700px) {
-  .trail-recommendations { grid-template-columns: minmax(0, 1fr) !important; }
-  .trail-recommendations > .recommendation-card { min-width: 0 !important; max-width: 100%; }
+  /* Keep both recommendations side by side so the user does not need an extra swipe. */
+  .trail-recommendations {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    align-items: stretch;
+  }
+  .trail-recommendations > .recommendation-card {
+    min-width: 0 !important;
+    max-width: 100%;
+    min-height: 0 !important;
+    padding: 11px 9px 10px !important;
+  }
   .callback-rec .recommendation-context,
   .callback-rec .rec-tag { min-width: 0; max-width: 100%; }
   .callback-rec .rec-tag {
@@ -913,10 +923,12 @@ html[data-theme="light"]{color-scheme:light;--bg:#f2efe8;--surface:#fbf9f4;--sur
     white-space: normal !important;
     overflow-wrap: anywhere;
     word-break: break-word;
-    line-height: 1.45;
+    line-height: 1.35;
+    font-size: 9px;
   }
-  .callback-rec p,
-  .callback-rec .recommendation-label { overflow-wrap: anywhere; word-break: normal; }
+  .callback-rec .recommendation-label { margin-top: 10px !important; overflow-wrap: anywhere; }
+  .callback-rec .recommendation-number strong { font-size: clamp(17px, 4.8vw, 23px) !important; }
+  .callback-rec p { margin-top: 6px !important; font-size: 9px !important; line-height: 1.4 !important; overflow-wrap: anywhere; }
 }
 </style>
 </head>
